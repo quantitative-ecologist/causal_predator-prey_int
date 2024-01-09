@@ -1,0 +1,36 @@
+---
+title: "Assemble dataset"
+author: "Maxime Fraser Franco"
+date: "January 9, 2024"
+toc: true
+format:
+  html
+#execute:
+#  warning: false
+---
+
+# Import the data from repositories
+
+## Original dataset
+
+Here, I import the original dataset used in Fraser Franco et al. (2024). The data is hosted on a GitHub repository that you can access [here](https://github.com/quantitative-ecologist/experience-hunting-tactics).
+
+
+```{r}
+github_id <- "https://raw.githubusercontent.com/quantitative-ecologist/"
+repo <- "experience-hunting-tactics"
+file <- "/main/data/FraserFrancoetal2023-data.csv"
+dat <- read.csv(
+  file.path(github_id, repo, file)
+)
+```
+
+Check the data structure
+
+```{r}
+head(dat)
+```
+
+## Dataset generated from Bayesian hierarchical model
+
+Here, we import the predicted values generated from the Bayesian multivariate double-hierarchical model. This allows us to assess whether predators were specialist or flexible at different experience levels. To do so, we import the `.rds` files which are hosted on this [OSF repository](https://osf.io/hdv38/)
