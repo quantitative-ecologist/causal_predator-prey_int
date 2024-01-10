@@ -1,36 +1,220 @@
 ---
-title: "Assemble dataset"
+title: "Assemble a dataset for analysis"
 author: "Maxime Fraser Franco"
 date: "January 9, 2024"
 toc: true
+number-sections: true
 format:
   html
 #execute:
 #  warning: false
 ---
 
-# Import the data from repositories
+## Description
 
-## Original dataset
+In this notebook, I show the pipeline to assemble a synthetic dataset that I will use to produce the analyses for the manuscript.
 
-Here, I import the original dataset used in Fraser Franco et al. (2024). The data is hosted on a GitHub repository that you can access [here](https://github.com/quantitative-ecologist/experience-hunting-tactics).
+## Import the data from GitHub
 
+The data is hosted on a GitHub repository that you can access [here](https://github.com/quantitative-ecologist/experience-hunting-tactics).
+
+### Original dataset
+
+Here, I import the original dataset used in Fraser Franco et al. (2024).
 
 ```{r}
+library(data.table)
+
 github_id <- "https://raw.githubusercontent.com/quantitative-ecologist/"
 repo <- "experience-hunting-tactics"
-file <- "/main/data/FraserFrancoetal2023-data.csv"
-dat <- read.csv(
-  file.path(github_id, repo, file)
+file1 <- "/main/data/FraserFrancoetal2023-data.csv"
+dat1 <- fread(
+  file.path(github_id, repo, file1),
+  stringsAsFactors = TRUE
 )
 ```
 
 Check the data structure
 
 ```{r}
-head(dat)
+knitr::kable(head(dat1))
 ```
 
-## Dataset generated from Bayesian hierarchical model
+### Predicted data
 
-Here, we import the predicted values generated from the Bayesian multivariate double-hierarchical model. This allows us to assess whether predators were specialist or flexible at different experience levels. To do so, we import the `.rds` files which are hosted on this [OSF repository](https://osf.io/hdv38/)
+Next, I import predicted values of foraging behaviour generated from a Bayesian multivariate double-hierarchical model. These predictions allow us to assess whether predators were specialist or flexible hunters across experience. The predictions are saved as an `.rds` file.
+
+```{r}
+file2 <- "/main/outputs/03_outputs_model-processing/DHMLM_id-draws.rds"
+raw_url <- paste0(github_id, repo, file2)
+dat2 <- readRDS(url(raw_url))
+
+# Columns as factors
+cols <- c("xp_level", "predator_id", "variable")
+dat2[
+  ,
+  (cols) := lapply(.SD, as.factor),
+  .SDcols = (cols)
+]
+```
+
+Check the data structure
+
+```{r}
+knitr::kable(head(dat2))
+```
+
+## Combine data into one dataset
+
+### Reshape the original data
+
+Add a xp_level variable to dat1
+
+```{r}
+# Experience column
+dat1[cumul_xp_pred < 100,
+     xp_level := "novice"]
+
+dat1[cumul_xp_pred %between% c(100, 299),
+     xp_level := "interm"]
+
+dat1[cumul_xp_pred >= 300,
+     xp_level := "advanced"]
+
+dat1[, xp_level := as.factor(xp_level)]
+```
+
+### Reshape the predicted data
+
+Here, I reshape the data to wide format so it is easier to work with when I merge.
+
+First, I select the variables I need.
+
+```{r}
+dat2 <- unique(
+    dat2[
+        variable == "pred_speed",
+        .(predator_id, xp_level, variable, sigma, mean_estimated)
+    ]
+)
+```
+
+Second, I reshape the table to wide format
+
+```{r}
+dat2 <- dcast(
+    dat2,
+    predator_id + xp_level ~ sigma,
+    value.var = "mean_estimated"
+)
+
+setnames(
+    dat2,
+    old = c("0", "1"),
+    new = c("predicted_mean_speed", "predicted_sigma_speed")
+)
+```
+
+Lastly, I add "pred" before each value of `predator_id` to have the same structure as `dat1`
+
+```{r}
+dat2[, predator_id := as.factor(paste0("pred", predator_id))]
+
+```
+
+Check the data
+
+```{r}
+knitr::kable(head(dat2))
+```
+
+### Merge the two tables
+
+```{r}
+data <- merge(
+    dat1,
+    dat2,
+    all.x = TRUE,
+    by = c("predator_id", "xp_level")
+)
+```
+## Organize the combined dataset
+
+### Remove outlier
+
+Remove predator outlier. This predator was removed from the analyses presented in Fraser Franco et al. (2024).
+
+```{r}
+data <- data[predator_id != "pred379433"]
+data[, predator_id := factor(predator_id)]
+```
+
+### Define the predator's tactic
+
+First, I define the predator's tactic based on the quantiles of the predicted values of mean speed. The tactic is defined along the ambush-cursorial continuum. For details, see [Fraser Franco et al. (2022)](https://academic.oup.com/beheco/article/33/5/967/6628566?login=false).
+
+The tactic can be:  
+
+1. Ambush
+2. Intercepting
+3. Cursorial
+
+```{r}
+quantile(data[, predicted_mean_speed])
+
+# Further below the mean = ambush
+data[
+  predicted_mean_speed < -0.04,
+  tactic := "ambush"
+]
+
+# Close to the mean = intercepting
+data[
+  predicted_mean_speed %between% c(-0.04,0.04),
+  tactic := "intercepting"
+]
+
+# Further above the mean = cursorial
+data[
+  predicted_mean_speed > 0.04,
+  tactic := "cursorial"
+]
+```
+
+### Define the predator's foraging strategy
+
+Second, I define the predator's foraging strategy based on the quantiles of the predicted values of sigma speed. Lower values of sigma indicate a narrower behavioural distribution, while higher values indicate a wider distribution. The strategy is defined along a specialized-flexible continuum.
+
+The strategy can be:  
+
+1. Specialized
+2. Intermediate
+3. Flexible
+
+```{r}
+quantile(data[, predicted_sigma_speed])
+
+# Further below the mean = specialist
+data[
+  predicted_sigma_speed < -0.04,
+  strategy := "specialist"
+]
+
+# Close to the mean = intermediate
+data[
+  predicted_sigma_speed %between% c(-0.04,0.04),
+  strategy := "intermediate"
+]
+
+# Further above the mean = flexible
+data[
+  predicted_sigma_speed > 0.04,
+  strategy := "flexible"
+]
+```
+
+Check the table
+
+```{r}
+knitr::kable(head(data))
+```
