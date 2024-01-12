@@ -64,11 +64,201 @@ Check the data structure
 knitr::kable(head(dat2))
 ```
 
-## Combine data into one dataset
+#### Classify predators into hunting types
+
+Based on the results of the model, we will now assign a hunting type to every predator at each experience level.
+
+**The predator's tactic**
+
+The tactic is defined along an ambush-cursorial continuum using the predator's speed as a proxy. For details, see [Fraser Franco et al. (2022)](https://academic.oup.com/beheco/article/33/5/967/6628566?login=false).
+
+The tactic can be:  
+
+1. Ambush
+2. Intercepting
+3. Cursorial
+
+**The foraging strategy**
+
+The predator's foraging strategy is based the predicted values of sigma speed. Lower values of sigma indicate a narrower behavioural distribution, while higher values indicate a wider distribution. The strategy is defined along a specialized-flexible continuum.
+
+In Fraser Franco et al. (2024), we found that the predator's tactic and foraging strategy are negatively correlated, indicating that faster (cursorial) predators are more specialized, while slower (ambush) predators are more flexible.
+
+The strategy can be:  
+
+1. Specialized
+2. Intermediate
+3. Flexible
+
+Here, we combine both information to classify predators into hunting types. This will make it easier to compute the joint probability distribution of the Bayesian learning network. I classify predators using fuzzy c-means clustering using the function `fanny()` from the `cluster` package.
+
+```{r}
+library(cluster)
+library(factoextra)
+
+# Function to perform fanny clustering with a fixed seed
+fanny_clustering <- function(data, k, seed, maxit) {
+  set.seed(seed)
+  result <- fanny(
+    data, k = k,
+    maxit = maxit, stand = FALSE
+  )
+  return(result)
+}
+
+# Sample data for three xp levels
+nov <- dat2[xp_level == "novice", c(3, 4)]
+interm <- dat2[xp_level == "interm", c(3, 4)]
+adv <- dat2[xp_level == "advanced", c(3, 4)]
+
+# Perform fanny clustering for each timeframe with a fixed seed
+seed <- 123
+k <- 3
+maxit <- 500
+clust1 <- fanny_clustering(nov, k, seed, maxit)
+clust2 <- fanny_clustering(interm, k, seed, maxit)
+clust3 <- fanny_clustering(adv, k, seed ,maxit)
+
+fviz_cluster(
+    clust1, ellipse.type = "norm", repel = TRUE,
+    palette = "jco", ggtheme = theme_classic(),
+    legend = "top", geom = "point",
+    xlab = "\nPredicted mean speed",
+    ylab = "Predicted IIV in speed\n",
+    pointsize = 2
+) +
+scale_y_continuous(
+    breaks = seq(-4, 4, 2),
+    limits = c(-5, 4.3)
+) +
+scale_x_continuous(
+    breaks = seq(-4, 4, 2),
+    limits = c(-5, 4)
+) +
+ggtitle("Clustering of novice predators") +
+theme_classic(base_size = 15)
+
+fviz_cluster(
+    clust2, ellipse.type = "norm", repel = TRUE,
+    palette = "jco", ggtheme = theme_classic(),
+    legend = "top", geom = "point",
+    xlab = "\nPredicted mean speed",
+    ylab = "Predicted IIV in speed\n",
+    pointsize = 2
+) +
+scale_y_continuous(
+    breaks = seq(-4, 4, 2),
+    limits = c(-4, 4.3)
+) +
+scale_x_continuous(
+    breaks = seq(-5.1, 4, 2),
+    limits = c(-5.1, 4)
+) +
+ggtitle("Clustering of intermediate predators") +
+theme_classic(base_size = 15)
+
+fviz_cluster(
+    clust3, ellipse.type = "norm", repel = TRUE,
+    palette = "jco", ggtheme = theme_classic(),
+    legend = "top", geom = "point",
+    xlab = "\nPredicted mean speed",
+    ylab = "Predicted IIV in speed\n",
+    pointsize = 2
+) +
+scale_y_continuous(
+    breaks = seq(-4, 4, 2),
+    limits = c(-4.8, 4.3)
+) +
+scale_x_continuous(
+    breaks = seq(-4, 4, 2),
+    limits = c(-4.8, 4)
+) +
+ggtitle("Clustering of advanced predators") +
+theme_classic(base_size = 15)
+
+
+
+
+
+
+# Verify the goodness of clustering results
+fviz_silhouette(
+    clust1, palette = "jco",
+    ggtheme = theme_classic()
+)
+```
+
+
+
+
+
+#### Add the information to the predicted dataset
+
+First, I need to extract the clustering results for every experience level.
+
+```{r}
+# List of fuzzy clustering objects
+clust_list <- list(clust1, clust2, clust3)
+
+# XP levels
+xp_levels <- factor(c("novice", "interm", "advanced"))
+
+# Initialize an empty list to store the results
+result_list <- list()
+
+# Loop through the clustering objects and create data.tables
+for (i in seq_along(clust_list)) {
+  result_list[[i]] <- data.table(
+    strategy = clust_list[[i]]$clustering,
+    predator_id = unique(dat2$predator_id),
+    xp_level = xp_levels[i]
+  )
+}
+
+# Combine into a single data.table
+clusters <- rbindlist(result_list)
+```
+
+Second, I merge the results (`clusters`) with `dat2`.
+
+```{r}
+dat2 <- merge(
+  dat2, clusters,
+  by = c("predator_id", "xp_level")
+)
+```
+
+Lastly, I rename the clustering results to reflect the strategy
+
+
+```{r}
+
+```
+
+
+
+
+## Import variables from raw data
+
+I include variables from the raw data that were missing in the original dataset. These variables relate to the predator's attacks.
+
+```{r}
+vars <- fread(
+  file.path(getwd(), "chapter2-ogdat", "final-data.csv"),
+  select = c(
+    "match_id", "predator_id", "chase_count", "chase_count_success",
+    "attacks_count", "prey_avg_heal_count", "prey_var_heal_count"),
+  stringsAsFactors = TRUE
+)
+
+vars[, chase_success_ratio := chase_count_success / chase_count]
+```
+
+## Merge into one dataset
 
 ### Reshape the original data
 
-Add a xp_level variable to dat1
+Add a xp_level variable to dat1 to combine.
 
 ```{r}
 # Experience column
@@ -119,7 +309,6 @@ Lastly, I add "pred" before each value of `predator_id` to have the same structu
 
 ```{r}
 dat2[, predator_id := as.factor(paste0("pred", predator_id))]
-
 ```
 
 Check the data
@@ -128,7 +317,7 @@ Check the data
 knitr::kable(head(dat2))
 ```
 
-### Merge the two tables
+### Merge the tables
 
 ```{r}
 data <- merge(
@@ -137,7 +326,14 @@ data <- merge(
     all.x = TRUE,
     by = c("predator_id", "xp_level")
 )
+
+data <- merge(
+  data,
+  vars,
+  by = c("match_id", "predator_id")
+)
 ```
+
 ## Organize the combined dataset
 
 ### Remove outlier
@@ -147,70 +343,6 @@ Remove predator outlier. This predator was removed from the analyses presented i
 ```{r}
 data <- data[predator_id != "pred379433"]
 data[, predator_id := factor(predator_id)]
-```
-
-### Define the predator's tactic
-
-First, I define the predator's tactic based on the quantiles of the predicted values of mean speed. The tactic is defined along the ambush-cursorial continuum. For details, see [Fraser Franco et al. (2022)](https://academic.oup.com/beheco/article/33/5/967/6628566?login=false).
-
-The tactic can be:  
-
-1. Ambush
-2. Intercepting
-3. Cursorial
-
-```{r}
-quantile(data[, predicted_mean_speed])
-
-# Further below the mean = ambush
-data[
-  predicted_mean_speed < -0.04,
-  tactic := "ambush"
-]
-
-# Close to the mean = intercepting
-data[
-  predicted_mean_speed %between% c(-0.04,0.04),
-  tactic := "intercepting"
-]
-
-# Further above the mean = cursorial
-data[
-  predicted_mean_speed > 0.04,
-  tactic := "cursorial"
-]
-```
-
-### Define the predator's foraging strategy
-
-Second, I define the predator's foraging strategy based on the quantiles of the predicted values of sigma speed. Lower values of sigma indicate a narrower behavioural distribution, while higher values indicate a wider distribution. The strategy is defined along a specialized-flexible continuum.
-
-The strategy can be:  
-
-1. Specialized
-2. Intermediate
-3. Flexible
-
-```{r}
-quantile(data[, predicted_sigma_speed])
-
-# Further below the mean = specialist
-data[
-  predicted_sigma_speed < -0.04,
-  strategy := "specialist"
-]
-
-# Close to the mean = intermediate
-data[
-  predicted_sigma_speed %between% c(-0.04,0.04),
-  strategy := "intermediate"
-]
-
-# Further above the mean = flexible
-data[
-  predicted_sigma_speed > 0.04,
-  strategy := "flexible"
-]
 ```
 
 Check the table

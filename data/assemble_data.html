@@ -87,17 +87,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#original-dataset" id="toc-original-dataset" class="nav-link" data-scroll-target="#original-dataset"><span class="header-section-number">2.1</span> Original dataset</a></li>
   <li><a href="#predicted-data" id="toc-predicted-data" class="nav-link" data-scroll-target="#predicted-data"><span class="header-section-number">2.2</span> Predicted data</a></li>
   </ul></li>
-  <li><a href="#combine-data-into-one-dataset" id="toc-combine-data-into-one-dataset" class="nav-link" data-scroll-target="#combine-data-into-one-dataset"><span class="header-section-number">3</span> Combine data into one dataset</a>
+  <li><a href="#import-variables-from-raw-data" id="toc-import-variables-from-raw-data" class="nav-link" data-scroll-target="#import-variables-from-raw-data"><span class="header-section-number">3</span> Import variables from raw data</a></li>
+  <li><a href="#merge-into-one-dataset" id="toc-merge-into-one-dataset" class="nav-link" data-scroll-target="#merge-into-one-dataset"><span class="header-section-number">4</span> Merge into one dataset</a>
   <ul class="collapse">
-  <li><a href="#reshape-the-original-data" id="toc-reshape-the-original-data" class="nav-link" data-scroll-target="#reshape-the-original-data"><span class="header-section-number">3.1</span> Reshape the original data</a></li>
-  <li><a href="#reshape-the-predicted-data" id="toc-reshape-the-predicted-data" class="nav-link" data-scroll-target="#reshape-the-predicted-data"><span class="header-section-number">3.2</span> Reshape the predicted data</a></li>
-  <li><a href="#merge-the-two-tables" id="toc-merge-the-two-tables" class="nav-link" data-scroll-target="#merge-the-two-tables"><span class="header-section-number">3.3</span> Merge the two tables</a></li>
+  <li><a href="#reshape-the-original-data" id="toc-reshape-the-original-data" class="nav-link" data-scroll-target="#reshape-the-original-data"><span class="header-section-number">4.1</span> Reshape the original data</a></li>
+  <li><a href="#reshape-the-predicted-data" id="toc-reshape-the-predicted-data" class="nav-link" data-scroll-target="#reshape-the-predicted-data"><span class="header-section-number">4.2</span> Reshape the predicted data</a></li>
+  <li><a href="#merge-the-tables" id="toc-merge-the-tables" class="nav-link" data-scroll-target="#merge-the-tables"><span class="header-section-number">4.3</span> Merge the tables</a></li>
   </ul></li>
-  <li><a href="#organize-the-combined-dataset" id="toc-organize-the-combined-dataset" class="nav-link" data-scroll-target="#organize-the-combined-dataset"><span class="header-section-number">4</span> Organize the combined dataset</a>
+  <li><a href="#organize-the-combined-dataset" id="toc-organize-the-combined-dataset" class="nav-link" data-scroll-target="#organize-the-combined-dataset"><span class="header-section-number">5</span> Organize the combined dataset</a>
   <ul class="collapse">
-  <li><a href="#remove-outlier" id="toc-remove-outlier" class="nav-link" data-scroll-target="#remove-outlier"><span class="header-section-number">4.1</span> Remove outlier</a></li>
-  <li><a href="#define-the-predators-tactic" id="toc-define-the-predators-tactic" class="nav-link" data-scroll-target="#define-the-predators-tactic"><span class="header-section-number">4.2</span> Define the predator’s tactic</a></li>
-  <li><a href="#define-the-predators-foraging-strategy" id="toc-define-the-predators-foraging-strategy" class="nav-link" data-scroll-target="#define-the-predators-foraging-strategy"><span class="header-section-number">4.3</span> Define the predator’s foraging strategy</a></li>
+  <li><a href="#remove-outlier" id="toc-remove-outlier" class="nav-link" data-scroll-target="#remove-outlier"><span class="header-section-number">5.1</span> Remove outlier</a></li>
+  <li><a href="#define-the-predators-tactic" id="toc-define-the-predators-tactic" class="nav-link" data-scroll-target="#define-the-predators-tactic"><span class="header-section-number">5.2</span> Define the predator’s tactic</a></li>
+  <li><a href="#define-the-predators-foraging-strategy" id="toc-define-the-predators-foraging-strategy" class="nav-link" data-scroll-target="#define-the-predators-foraging-strategy"><span class="header-section-number">5.3</span> Define the predator’s foraging strategy</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -411,60 +412,78 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<section id="cluster-players" class="level4" data-number="2.2.1">
+<h4 data-number="2.2.1" class="anchored" data-anchor-id="cluster-players"><span class="header-section-number">2.2.1</span> Cluster players</h4>
 </section>
 </section>
-<section id="combine-data-into-one-dataset" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="combine-data-into-one-dataset"><span class="header-section-number">3</span> Combine data into one dataset</h2>
-<section id="reshape-the-original-data" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="reshape-the-original-data"><span class="header-section-number">3.1</span> Reshape the original data</h3>
-<p>Add a xp_level variable to dat1</p>
+</section>
+<section id="import-variables-from-raw-data" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="import-variables-from-raw-data"><span class="header-section-number">3</span> Import variables from raw data</h2>
+<p>I include variables from the raw data that were missing in the original dataset. These variables relate to the predator’s attacks.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Experience column</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dat1[cumul_xp_pred <span class="sc">&lt;</span> <span class="dv">100</span>,</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>     xp_level <span class="sc">:</span><span class="er">=</span> <span class="st">"novice"</span>]</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>dat1[cumul_xp_pred <span class="sc">%between%</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">299</span>),</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>     xp_level <span class="sc">:</span><span class="er">=</span> <span class="st">"interm"</span>]</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>dat1[cumul_xp_pred <span class="sc">&gt;=</span> <span class="dv">300</span>,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>     xp_level <span class="sc">:</span><span class="er">=</span> <span class="st">"advanced"</span>]</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>dat1[, xp_level <span class="sc">:</span><span class="er">=</span> <span class="fu">as.factor</span>(xp_level)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">fread</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"chapter2-ogdat"</span>, <span class="st">"final-data.csv"</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">select =</span> <span class="fu">c</span>(</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"match_id"</span>, <span class="st">"predator_id"</span>, <span class="st">"chase_count"</span>, <span class="st">"chase_count_success"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"attacks_count"</span>, <span class="st">"prey_avg_heal_count"</span>, <span class="st">"prey_var_heal_count"</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">TRUE</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>vars[, chase_success_ratio <span class="sc">:</span><span class="er">=</span> chase_count_success <span class="sc">/</span> chase_count]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="reshape-the-predicted-data" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="reshape-the-predicted-data"><span class="header-section-number">3.2</span> Reshape the predicted data</h3>
+<section id="merge-into-one-dataset" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="merge-into-one-dataset"><span class="header-section-number">4</span> Merge into one dataset</h2>
+<section id="reshape-the-original-data" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="reshape-the-original-data"><span class="header-section-number">4.1</span> Reshape the original data</h3>
+<p>Add a xp_level variable to dat1 to combine.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Experience column</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dat1[cumul_xp_pred <span class="sc">&lt;</span> <span class="dv">100</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>     xp_level <span class="sc">:</span><span class="er">=</span> <span class="st">"novice"</span>]</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>dat1[cumul_xp_pred <span class="sc">%between%</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">299</span>),</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>     xp_level <span class="sc">:</span><span class="er">=</span> <span class="st">"interm"</span>]</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>dat1[cumul_xp_pred <span class="sc">&gt;=</span> <span class="dv">300</span>,</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>     xp_level <span class="sc">:</span><span class="er">=</span> <span class="st">"advanced"</span>]</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>dat1[, xp_level <span class="sc">:</span><span class="er">=</span> <span class="fu">as.factor</span>(xp_level)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reshape-the-predicted-data" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="reshape-the-predicted-data"><span class="header-section-number">4.2</span> Reshape the predicted data</h3>
 <p>Here, I reshape the data to wide format so it is easier to work with when I merge.</p>
 <p>First, I select the variables I need.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">unique</span>(</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    dat2[</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        variable <span class="sc">==</span> <span class="st">"pred_speed"</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>        .(predator_id, xp_level, variable, sigma, mean_estimated)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">unique</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    dat2[</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>        variable <span class="sc">==</span> <span class="st">"pred_speed"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        .(predator_id, xp_level, variable, sigma, mean_estimated)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Second, I reshape the table to wide format</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">dcast</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    dat2,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    predator_id <span class="sc">+</span> xp_level <span class="sc">~</span> sigma,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">value.var =</span> <span class="st">"mean_estimated"</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">setnames</span>(</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    dat2,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">old =</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>),</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new =</span> <span class="fu">c</span>(<span class="st">"predicted_mean_speed"</span>, <span class="st">"predicted_sigma_speed"</span>)</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">dcast</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    dat2,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    predator_id <span class="sc">+</span> xp_level <span class="sc">~</span> sigma,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">value.var =</span> <span class="st">"mean_estimated"</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">setnames</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    dat2,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">old =</span> <span class="fu">c</span>(<span class="st">"0"</span>, <span class="st">"1"</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">new =</span> <span class="fu">c</span>(<span class="st">"predicted_mean_speed"</span>, <span class="st">"predicted_sigma_speed"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Lastly, I add “pred” before each value of <code>predator_id</code> to have the same structure as <code>dat1</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dat2[, predator_id <span class="sc">:</span><span class="er">=</span> <span class="fu">as.factor</span>(<span class="fu">paste0</span>(<span class="st">"pred"</span>, predator_id))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dat2[, predator_id <span class="sc">:</span><span class="er">=</span> <span class="fu">as.factor</span>(<span class="fu">paste0</span>(<span class="st">"pred"</span>, predator_id))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Check the data</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(dat2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(dat2))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -517,30 +536,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="merge-the-two-tables" class="level3" data-number="3.3">
-<h3 data-number="3.3" class="anchored" data-anchor-id="merge-the-two-tables"><span class="header-section-number">3.3</span> Merge the two tables</h3>
+<section id="merge-the-tables" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="merge-the-tables"><span class="header-section-number">4.3</span> Merge the tables</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    dat1,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    dat2,</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">all.x =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"predator_id"</span>, <span class="st">"xp_level"</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    dat1,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    dat2,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">all.x =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"predator_id"</span>, <span class="st">"xp_level"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  vars,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"match_id"</span>, <span class="st">"predator_id"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
-<section id="organize-the-combined-dataset" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="organize-the-combined-dataset"><span class="header-section-number">4</span> Organize the combined dataset</h2>
-<section id="remove-outlier" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="remove-outlier"><span class="header-section-number">4.1</span> Remove outlier</h3>
+<section id="organize-the-combined-dataset" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="organize-the-combined-dataset"><span class="header-section-number">5</span> Organize the combined dataset</h2>
+<section id="remove-outlier" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="remove-outlier"><span class="header-section-number">5.1</span> Remove outlier</h3>
 <p>Remove predator outlier. This predator was removed from the analyses presented in Fraser Franco et al.&nbsp;(2024).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[predator_id <span class="sc">!=</span> <span class="st">"pred379433"</span>]</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>data[, predator_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(predator_id)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[predator_id <span class="sc">!=</span> <span class="st">"pred379433"</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>data[, predator_id <span class="sc">:</span><span class="er">=</span> <span class="fu">factor</span>(predator_id)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="define-the-predators-tactic" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="define-the-predators-tactic"><span class="header-section-number">4.2</span> Define the predator’s tactic</h3>
+<section id="define-the-predators-tactic" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="define-the-predators-tactic"><span class="header-section-number">5.2</span> Define the predator’s tactic</h3>
 <p>First, I define the predator’s tactic based on the quantiles of the predicted values of mean speed. The tactic is defined along the ambush-cursorial continuum. For details, see <a href="https://academic.oup.com/beheco/article/33/5/967/6628566?login=false">Fraser Franco et al.&nbsp;(2022)</a>.</p>
 <p>The tactic can be:</p>
 <ol type="1">
@@ -549,32 +574,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Cursorial</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data[, predicted_mean_speed])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data[, predicted_mean_speed])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>         0%         25%         50%         75%        100% 
 -0.81326484 -0.05983667  0.03281242  0.10234174  0.37551639 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Further below the mean = ambush</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>data[</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  predicted_mean_speed <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.04</span>,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  tactic <span class="sc">:</span><span class="er">=</span> <span class="st">"ambush"</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Close to the mean = intercepting</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>data[</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  predicted_mean_speed <span class="sc">%between%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.04</span>,<span class="fl">0.04</span>),</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  tactic <span class="sc">:</span><span class="er">=</span> <span class="st">"intercepting"</span></span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Further above the mean = cursorial</span></span>
-<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>data[</span>
-<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  predicted_mean_speed <span class="sc">&gt;</span> <span class="fl">0.04</span>,</span>
-<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  tactic <span class="sc">:</span><span class="er">=</span> <span class="st">"cursorial"</span></span>
-<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Further below the mean = ambush</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  predicted_mean_speed <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.04</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  tactic <span class="sc">:</span><span class="er">=</span> <span class="st">"ambush"</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Close to the mean = intercepting</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  predicted_mean_speed <span class="sc">%between%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.04</span>,<span class="fl">0.04</span>),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  tactic <span class="sc">:</span><span class="er">=</span> <span class="st">"intercepting"</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Further above the mean = cursorial</span></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  predicted_mean_speed <span class="sc">&gt;</span> <span class="fl">0.04</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  tactic <span class="sc">:</span><span class="er">=</span> <span class="st">"cursorial"</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="define-the-predators-foraging-strategy" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="define-the-predators-foraging-strategy"><span class="header-section-number">4.3</span> Define the predator’s foraging strategy</h3>
+<section id="define-the-predators-foraging-strategy" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="define-the-predators-foraging-strategy"><span class="header-section-number">5.3</span> Define the predator’s foraging strategy</h3>
 <p>Second, I define the predator’s foraging strategy based on the quantiles of the predicted values of sigma speed. Lower values of sigma indicate a narrower behavioural distribution, while higher values indicate a wider distribution. The strategy is defined along a specialized-flexible continuum.</p>
 <p>The strategy can be:</p>
 <ol type="1">
@@ -583,62 +608,68 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Flexible</li>
 </ol>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data[, predicted_sigma_speed])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(data[, predicted_sigma_speed])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>        0%        25%        50%        75%       100% 
 -0.8027678 -0.3274055 -0.1058192  0.2244100  1.9882656 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Further below the mean = specialist</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>data[</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  predicted_sigma_speed <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.04</span>,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  strategy <span class="sc">:</span><span class="er">=</span> <span class="st">"specialist"</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Close to the mean = intermediate</span></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>data[</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  predicted_sigma_speed <span class="sc">%between%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.04</span>,<span class="fl">0.04</span>),</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  strategy <span class="sc">:</span><span class="er">=</span> <span class="st">"intermediate"</span></span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>]</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Further above the mean = flexible</span></span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>data[</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  predicted_sigma_speed <span class="sc">&gt;</span> <span class="fl">0.04</span>,</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  strategy <span class="sc">:</span><span class="er">=</span> <span class="st">"flexible"</span></span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Further below the mean = specialist</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  predicted_sigma_speed <span class="sc">&lt;</span> <span class="sc">-</span><span class="fl">0.04</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  strategy <span class="sc">:</span><span class="er">=</span> <span class="st">"specialist"</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Close to the mean = intermediate</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  predicted_sigma_speed <span class="sc">%between%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.04</span>,<span class="fl">0.04</span>),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  strategy <span class="sc">:</span><span class="er">=</span> <span class="st">"intermediate"</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Further above the mean = flexible</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  predicted_sigma_speed <span class="sc">&gt;</span> <span class="fl">0.04</span>,</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  strategy <span class="sc">:</span><span class="er">=</span> <span class="st">"flexible"</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Check the table</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 2%">
 <col style="width: 4%">
-<col style="width: 3%">
+<col style="width: 2%">
 <col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 2%">
 <col style="width: 3%">
 <col style="width: 3%">
-<col style="width: 6%">
-<col style="width: 8%">
 <col style="width: 3%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 2%">
+<col style="width: 3%">
 <col style="width: 5%">
 <col style="width: 5%">
+<col style="width: 2%">
+<col style="width: 4%">
 <col style="width: 3%">
-<col style="width: 5%">
-<col style="width: 7%">
-<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
 <col style="width: 3%">
-<col style="width: 3%">
+<col style="width: 2%">
 </colgroup>
 <thead>
 <tr class="header">
+<th style="text-align: left;">match_id</th>
 <th style="text-align: left;">predator_id</th>
 <th style="text-align: left;">xp_level</th>
 <th style="text-align: left;">timestamp</th>
-<th style="text-align: left;">match_id</th>
 <th style="text-align: left;">game_mode</th>
 <th style="text-align: left;">realm_id</th>
 <th style="text-align: left;">environment_id</th>
@@ -653,141 +684,183 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th style="text-align: right;">prey_avg_speed</th>
 <th style="text-align: right;">predicted_mean_speed</th>
 <th style="text-align: right;">predicted_sigma_speed</th>
+<th style="text-align: right;">chase_count</th>
+<th style="text-align: right;">chase_count_success</th>
+<th style="text-align: right;">attacks_count</th>
+<th style="text-align: right;">prey_avg_heal_count</th>
+<th style="text-align: right;">prey_var_heal_count</th>
+<th style="text-align: right;">chase_success_ratio</th>
 <th style="text-align: left;">tactic</th>
 <th style="text-align: left;">strategy</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">pred100494</td>
-<td style="text-align: left;">advanced</td>
-<td style="text-align: left;">2021-02-10 14:36:17</td>
-<td style="text-align: left;">6HZCTMYP</td>
+<td style="text-align: left;">002W3HHO</td>
+<td style="text-align: left;">pred558338</td>
+<td style="text-align: left;">interm</td>
+<td style="text-align: left;">2021-01-14 22:33:06</td>
 <td style="text-align: left;">Online</td>
-<td style="text-align: left;">Silent Hill</td>
-<td style="text-align: left;">Midwich Elementary School</td>
-<td style="text-align: left;">Doctor</td>
-<td style="text-align: right;">1028.4464</td>
-<td style="text-align: right;">12.75</td>
+<td style="text-align: left;">The Macmillan Estate</td>
+<td style="text-align: left;">Suffocation Pit</td>
+<td style="text-align: left;">Spirit</td>
+<td style="text-align: right;">523.0090</td>
+<td style="text-align: right;">5.50</td>
 <td style="text-align: right;">500</td>
-<td style="text-align: right;">300</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">23070</td>
-<td style="text-align: right;">3.331862</td>
-<td style="text-align: right;">1.872120</td>
-<td style="text-align: right;">0.1673811</td>
-<td style="text-align: right;">-0.1234904</td>
-<td style="text-align: left;">cursorial</td>
+<td style="text-align: right;">183</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">25990</td>
+<td style="text-align: right;">3.552908</td>
+<td style="text-align: right;">2.329212</td>
+<td style="text-align: right;">-0.0919338</td>
+<td style="text-align: right;">0.2850146</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">2.250000</td>
+<td style="text-align: right;">2.9166667</td>
+<td style="text-align: right;">0.4705882</td>
+<td style="text-align: left;">ambush</td>
+<td style="text-align: left;">flexible</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">005QEKAB</td>
+<td style="text-align: left;">pred390909</td>
+<td style="text-align: left;">novice</td>
+<td style="text-align: left;">2020-12-30 09:14:30</td>
+<td style="text-align: left;">Online</td>
+<td style="text-align: left;">Backwater Swamp</td>
+<td style="text-align: left;">The Pale Rose</td>
+<td style="text-align: left;">Trapper</td>
+<td style="text-align: right;">802.9057</td>
+<td style="text-align: right;">4.50</td>
+<td style="text-align: right;">431</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">22799</td>
+<td style="text-align: right;">3.415845</td>
+<td style="text-align: right;">2.497742</td>
+<td style="text-align: right;">-0.1087114</td>
+<td style="text-align: right;">0.2883798</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">2.666667</td>
+<td style="text-align: right;">4.3333333</td>
+<td style="text-align: right;">0.2592593</td>
+<td style="text-align: left;">ambush</td>
+<td style="text-align: left;">flexible</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">00ATEFT5</td>
+<td style="text-align: left;">pred389952</td>
+<td style="text-align: left;">advanced</td>
+<td style="text-align: left;">2021-04-25 11:57:02</td>
+<td style="text-align: left;">Online</td>
+<td style="text-align: left;">The Macmillan Estate</td>
+<td style="text-align: left;">Suffocation Pit</td>
+<td style="text-align: left;">Oni</td>
+<td style="text-align: right;">693.8499</td>
+<td style="text-align: right;">4.25</td>
+<td style="text-align: right;">498</td>
+<td style="text-align: right;">388</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">25814</td>
+<td style="text-align: right;">3.706177</td>
+<td style="text-align: right;">2.666856</td>
+<td style="text-align: right;">0.0322459</td>
+<td style="text-align: right;">-0.1359808</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">3.750000</td>
+<td style="text-align: right;">10.9166667</td>
+<td style="text-align: right;">0.2000000</td>
+<td style="text-align: left;">intercepting</td>
 <td style="text-align: left;">specialist</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">pred100494</td>
+<td style="text-align: left;">00BQMP7T</td>
+<td style="text-align: left;">pred35544</td>
 <td style="text-align: left;">advanced</td>
-<td style="text-align: left;">2021-02-10 14:58:08</td>
-<td style="text-align: left;">MCD2PVSJ</td>
+<td style="text-align: left;">2021-03-17 03:01:23</td>
 <td style="text-align: left;">Online</td>
-<td style="text-align: left;">Springwood</td>
-<td style="text-align: left;">Badham Preschool2</td>
-<td style="text-align: left;">Doctor</td>
-<td style="text-align: right;">658.2843</td>
-<td style="text-align: right;">7.50</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">301</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">16427</td>
-<td style="text-align: right;">3.423078</td>
-<td style="text-align: right;">2.518834</td>
-<td style="text-align: right;">0.1673811</td>
-<td style="text-align: right;">-0.1234904</td>
-<td style="text-align: left;">cursorial</td>
-<td style="text-align: left;">specialist</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pred100494</td>
-<td style="text-align: left;">advanced</td>
-<td style="text-align: left;">2021-02-10 15:17:50</td>
-<td style="text-align: left;">TBBLZY6C</td>
-<td style="text-align: left;">Online</td>
-<td style="text-align: left;">Silent Hill</td>
-<td style="text-align: left;">Midwich Elementary School</td>
-<td style="text-align: left;">Doctor</td>
-<td style="text-align: right;">828.8607</td>
-<td style="text-align: right;">7.00</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">302</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">14554</td>
-<td style="text-align: right;">3.551862</td>
-<td style="text-align: right;">2.386576</td>
-<td style="text-align: right;">0.1673811</td>
-<td style="text-align: right;">-0.1234904</td>
-<td style="text-align: left;">cursorial</td>
-<td style="text-align: left;">specialist</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">pred100494</td>
-<td style="text-align: left;">advanced</td>
-<td style="text-align: left;">2021-02-10 15:37:49</td>
-<td style="text-align: left;">AU5LLMEO</td>
-<td style="text-align: left;">Online</td>
-<td style="text-align: left;">Gideon Meat Plant</td>
-<td style="text-align: left;">The Game</td>
-<td style="text-align: left;">Doctor</td>
-<td style="text-align: right;">895.6699</td>
-<td style="text-align: right;">15.25</td>
-<td style="text-align: right;">500</td>
-<td style="text-align: right;">303</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">18795</td>
-<td style="text-align: right;">3.693861</td>
-<td style="text-align: right;">2.124488</td>
-<td style="text-align: right;">0.1673811</td>
-<td style="text-align: right;">-0.1234904</td>
-<td style="text-align: left;">cursorial</td>
-<td style="text-align: left;">specialist</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">pred100494</td>
-<td style="text-align: left;">advanced</td>
-<td style="text-align: left;">2021-02-10 15:56:28</td>
-<td style="text-align: left;">OAUM0JDR</td>
-<td style="text-align: left;">Online</td>
-<td style="text-align: left;">Crotus Prenn Asylum</td>
-<td style="text-align: left;">Father Campbell’s Chapel</td>
-<td style="text-align: left;">Doctor</td>
-<td style="text-align: right;">600.3939</td>
+<td style="text-align: left;">Léry’s Memorial Institute</td>
+<td style="text-align: left;">Treatment Theatre</td>
+<td style="text-align: left;">Executioner</td>
+<td style="text-align: right;">907.0087</td>
 <td style="text-align: right;">8.50</td>
 <td style="text-align: right;">500</td>
-<td style="text-align: right;">304</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">15218</td>
-<td style="text-align: right;">3.566796</td>
-<td style="text-align: right;">2.477326</td>
-<td style="text-align: right;">0.1673811</td>
-<td style="text-align: right;">-0.1234904</td>
-<td style="text-align: left;">cursorial</td>
+<td style="text-align: right;">420</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">26204</td>
+<td style="text-align: right;">3.528847</td>
+<td style="text-align: right;">2.061698</td>
+<td style="text-align: right;">0.0246121</td>
+<td style="text-align: right;">-0.0591542</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">2.500000</td>
+<td style="text-align: right;">13.6666667</td>
+<td style="text-align: right;">0.4000000</td>
+<td style="text-align: left;">intercepting</td>
 <td style="text-align: left;">specialist</td>
 </tr>
-<tr class="even">
-<td style="text-align: left;">pred100494</td>
-<td style="text-align: left;">advanced</td>
-<td style="text-align: left;">2021-02-10 16:14:30</td>
-<td style="text-align: left;">UX8FKSDK</td>
+<tr class="odd">
+<td style="text-align: left;">00CQOXUD</td>
+<td style="text-align: left;">pred199640</td>
+<td style="text-align: left;">novice</td>
+<td style="text-align: left;">2020-12-15 10:42:03</td>
 <td style="text-align: left;">Online</td>
-<td style="text-align: left;">Gideon Meat Plant</td>
-<td style="text-align: left;">The Game</td>
-<td style="text-align: left;">Doctor</td>
-<td style="text-align: right;">573.3817</td>
-<td style="text-align: right;">11.25</td>
+<td style="text-align: left;">Autohaven Wreckers</td>
+<td style="text-align: left;">Blood Lodge</td>
+<td style="text-align: left;">Hillbilly</td>
+<td style="text-align: right;">605.7487</td>
+<td style="text-align: right;">15.00</td>
 <td style="text-align: right;">500</td>
-<td style="text-align: right;">305</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">13057</td>
-<td style="text-align: right;">3.547384</td>
-<td style="text-align: right;">2.255123</td>
-<td style="text-align: right;">0.1673811</td>
-<td style="text-align: right;">-0.1234904</td>
-<td style="text-align: left;">cursorial</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">19925</td>
+<td style="text-align: right;">3.685771</td>
+<td style="text-align: right;">2.569129</td>
+<td style="text-align: right;">-0.0088079</td>
+<td style="text-align: right;">0.1422054</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">3.500000</td>
+<td style="text-align: right;">20.3333333</td>
+<td style="text-align: right;">0.2500000</td>
+<td style="text-align: left;">intercepting</td>
+<td style="text-align: left;">flexible</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">00CRTYUI</td>
+<td style="text-align: left;">pred169557</td>
+<td style="text-align: left;">advanced</td>
+<td style="text-align: left;">2021-04-03 13:05:23</td>
+<td style="text-align: left;">Online</td>
+<td style="text-align: left;">Autohaven Wreckers</td>
+<td style="text-align: left;">Azarov’s Resting Place</td>
+<td style="text-align: left;">Shape</td>
+<td style="text-align: right;">734.5078</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">500</td>
+<td style="text-align: right;">388</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">19531</td>
+<td style="text-align: right;">3.456210</td>
+<td style="text-align: right;">2.447369</td>
+<td style="text-align: right;">0.0328124</td>
+<td style="text-align: right;">-0.0611418</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">1.333333</td>
+<td style="text-align: right;">0.3333333</td>
+<td style="text-align: right;">0.2777778</td>
+<td style="text-align: left;">intercepting</td>
 <td style="text-align: left;">specialist</td>
 </tr>
 </tbody>
