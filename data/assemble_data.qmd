@@ -12,7 +12,17 @@ format:
 
 ## Description
 
-In this notebook, I show the pipeline to assemble a synthetic dataset that I will use to produce the analyses for the manuscript.
+In this notebook, I build a pipeline that assembles a synthetic dataset that I will use for the analyses presented in the manuscript of this project. The pipeline is coded in `R`.
+
+I start by importing the libraries that I will use.
+
+```{r, message = FALSE}
+libs <- c(
+  "data.table", "cluster",
+  "ggplot2", "ggpubr", "viridis"
+)
+lapply(libs, library, character.only = TRUE)
+```
 
 ## Import the data from GitHub
 
@@ -23,8 +33,6 @@ The data is hosted on a GitHub repository that you can access [here](https://git
 Here, I import the original dataset used in Fraser Franco et al. (2024).
 
 ```{r}
-library(data.table)
-
 github_id <- "https://raw.githubusercontent.com/quantitative-ecologist/"
 repo <- "experience-hunting-tactics"
 file1 <- "/main/data/FraserFrancoetal2023-data.csv"
@@ -64,9 +72,25 @@ Check the data structure
 knitr::kable(head(dat2))
 ```
 
-#### Classify predators into hunting types
+## Import variables from raw data
 
-Based on the results of the model, we will now assign a hunting type to every predator at each experience level.
+I include variables from the raw data that were missing in the original dataset. These variables relate to the predator's attacks.
+
+```{r}
+vars <- fread(
+  file.path(getwd(), "chapter2-ogdat", "final-data.csv"),
+  select = c(
+    "match_id", "predator_id", "chase_count", "chase_count_success",
+    "attacks_count", "prey_avg_heal_count", "prey_var_heal_count"),
+  stringsAsFactors = TRUE
+)
+
+vars[, chase_success_ratio := chase_count_success / chase_count]
+```
+
+## Classify predators into hunting styles
+
+Based on the predictions of the Bayesian multivariate hierarchical model (`dat2`), we will now assign a hunting type to every predator at each experience level.
 
 **The predator's tactic**
 
@@ -80,9 +104,7 @@ The tactic can be:
 
 **The foraging strategy**
 
-The predator's foraging strategy is based the predicted values of sigma speed. Lower values of sigma indicate a narrower behavioural distribution, while higher values indicate a wider distribution. The strategy is defined along a specialized-flexible continuum.
-
-In Fraser Franco et al. (2024), we found that the predator's tactic and foraging strategy are negatively correlated, indicating that faster (cursorial) predators are more specialized, while slower (ambush) predators are more flexible.
+The predator's foraging strategy is based the predicted values of sigma speed in `dat2`. This parameter is the variance of the behavioural distribution estimated for every predator. Lower values of sigma indicate a narrower behavioural distribution (specialization), while higher values indicate a wider distribution (flexibility). The strategy is defined along a specialized-flexible continuum.
 
 The strategy can be:  
 
@@ -90,12 +112,75 @@ The strategy can be:
 2. Intermediate
 3. Flexible
 
-Here, we combine both information to classify predators into hunting types. This will make it easier to compute the joint probability distribution of the Bayesian learning network. I classify predators using fuzzy c-means clustering using the function `fanny()` from the `cluster` package.
+In Fraser Franco et al. (2024), we found that the predators' tactics and foraging strategies are negatively correlated, indicating that faster (cursorial) predators are more specialized, while slower (ambush) predators are more flexible.
+
+Here, we combine both information to classify predators into hunting types. This will make it easier to compute the joint probability distribution of the Bayesian learning network. I classify predators using fuzzy c-means clustering with the `fanny()` function from the `cluster` package.
+
+### Prepare the data for clustering
+
+Here, I prepare `dat2` to have clean tables for clustering.
+
+First, I calculate the posterior median of sigma values, since the median is a more robust central-tendency measure for non symmetric distributions such as variances. I also remove duplicate values to only keep the information on the median of the posterior. Lastly, I arrange the table into wide format.
 
 ```{r}
-library(cluster)
-library(factoextra)
+# Calculate the posterior median values
+dat2[
+  , post_median := median(value),
+  by = .(xp_level, sigma, variable, predator_id)
+]
 
+# Keep unique values for speed only
+dat2 <- unique(
+    dat2[
+        variable == "pred_speed",
+        .(predator_id, xp_level, variable, sigma, post_median)
+    ]
+)
+
+# Reshape the table to wide format
+dat2 <- dcast(
+    dat2,
+    predator_id + xp_level ~ sigma,
+    value.var = "post_median"
+)
+
+# Change column names to reflect the variable name
+setnames(
+    dat2,
+    old = c("0", "1"),
+    new = c("predicted_mean_speed", "predicted_sigma_speed")
+)
+```
+
+I add "pred" before each label of `predator_id` to have the same structure as `dat1`. This will be useful when we merge the tables.
+
+```{r}
+dat2[, predator_id := as.factor(paste0("pred", predator_id))]
+```
+
+I now generate three tables from `dat2` for each experience level. These are the tables that I will use for the fuzzy clustering.
+
+```{r}
+
+# Sample data for three xp levels
+filter_dat <- function(data, level) {
+  result <- data[
+    xp_level == level,
+    c(3, 4)
+  ]
+  return(result)
+}
+
+nov <- filter_dat(dat2, level = "novice")
+interm <- filter_dat(dat2, level = "interm")
+adv <- filter_dat(dat2, level = "advanced")
+```
+
+### Run the fuzzy clustering algorithm
+
+I now run the clustering algorithm on the three datasets `nov`, `interm`, and `adv`.
+
+```{r}
 # Function to perform fanny clustering with a fixed seed
 fanny_clustering <- function(data, k, seed, maxit) {
   set.seed(seed)
@@ -106,93 +191,94 @@ fanny_clustering <- function(data, k, seed, maxit) {
   return(result)
 }
 
-# Sample data for three xp levels
-nov <- dat2[xp_level == "novice", c(3, 4)]
-interm <- dat2[xp_level == "interm", c(3, 4)]
-adv <- dat2[xp_level == "advanced", c(3, 4)]
-
-# Perform fanny clustering for each timeframe with a fixed seed
+# Clustering parameters
 seed <- 123
 k <- 3
 maxit <- 500
+
+# Run clustering algorithm at each xp level
 clust1 <- fanny_clustering(nov, k, seed, maxit)
 clust2 <- fanny_clustering(interm, k, seed, maxit)
 clust3 <- fanny_clustering(adv, k, seed ,maxit)
+```
 
-fviz_cluster(
-    clust1, ellipse.type = "norm", repel = TRUE,
-    palette = "jco", ggtheme = theme_classic(),
-    legend = "top", geom = "point",
-    xlab = "\nPredicted mean speed",
-    ylab = "Predicted IIV in speed\n",
-    pointsize = 2
-) +
-scale_y_continuous(
-    breaks = seq(-4, 4, 2),
-    limits = c(-5, 4.3)
-) +
-scale_x_continuous(
-    breaks = seq(-4, 4, 2),
-    limits = c(-5, 4)
-) +
-ggtitle("Clustering of novice predators") +
-theme_classic(base_size = 15)
+I plot the results to visualize the clusters. I start by preparing the clustering objects to use as data to feed the to the `ggplot()` function.
 
-fviz_cluster(
-    clust2, ellipse.type = "norm", repel = TRUE,
-    palette = "jco", ggtheme = theme_classic(),
-    legend = "top", geom = "point",
-    xlab = "\nPredicted mean speed",
-    ylab = "Predicted IIV in speed\n",
-    pointsize = 2
-) +
-scale_y_continuous(
-    breaks = seq(-4, 4, 2),
-    limits = c(-4, 4.3)
-) +
-scale_x_continuous(
-    breaks = seq(-5.1, 4, 2),
-    limits = c(-5.1, 4)
-) +
-ggtitle("Clustering of intermediate predators") +
-theme_classic(base_size = 15)
+```{r, out.width="100%", out.height="70%"}
+# Generate the data from the clustering objects
+generate_dataset <- function(clust) {
+  data.frame(
+    cluster = clust$clustering,
+    predicted_mean_speed = clust$data[, 1],
+    predicted_sigma_speed = clust$data[, 2]
+  )
+}
 
-fviz_cluster(
-    clust3, ellipse.type = "norm", repel = TRUE,
-    palette = "jco", ggtheme = theme_classic(),
-    legend = "top", geom = "point",
-    xlab = "\nPredicted mean speed",
-    ylab = "Predicted IIV in speed\n",
-    pointsize = 2
-) +
-scale_y_continuous(
-    breaks = seq(-4, 4, 2),
-    limits = c(-4.8, 4.3)
-) +
-scale_x_continuous(
-    breaks = seq(-4, 4, 2),
-    limits = c(-4.8, 4)
-) +
-ggtitle("Clustering of advanced predators") +
-theme_classic(base_size = 15)
+# List of clustering objects from fanny()
+fanny_objects <- list(clust1, clust2, clust3)
 
+# Generate datasets and store in a list.
+datasets <- lapply(fanny_objects, generate_dataset)
+```
 
+I then proceed to plot the results.
 
+```{r, fig.height=4, fig.width=10}
+# Function to generate ggplot2 plot
+generate_plot <- function(cluster_data, title) {
+  ggplot(
+    data = cluster_data,
+    aes(x = predicted_mean_speed,
+        y = predicted_sigma_speed,
+        color = as.factor(cluster))
+    ) +
+    geom_point(size = 2, alpha = 0.4) +
+    stat_ellipse(
+        geom = "path", level = 0.95,
+        linetype = "solid",
+        type = "norm"
+    ) +
+    scale_color_viridis(
+        discrete = TRUE, option = "D",
+        name = "Cluster:"
+    ) +
+    scale_x_continuous(
+        breaks = seq(-1, 0.5, 0.25),
+        limits = c(-1, 0.5)
+    ) +
+    scale_y_continuous(
+        breaks = seq(-1, 2, 0.5),
+        limits = c(-1, 2)
+    ) +
+    labs(
+      x = "\nPredicted mean speed",
+      y = "Predicted IIV in speed\n",
+      title = title
+    ) +
+    theme_classic(base_size = 12) +
+    theme(legend.position = "top")
+}
 
+# Plot titles for each panel
+plot_titles <- c("Novice", "Intermediate", "Advanced")
 
+# Generate ggplot2 plots using lapply
+plots <- lapply(seq_along(datasets), function(i) {
+  generate_plot(datasets[[i]], plot_titles[i])
+})
 
-# Verify the goodness of clustering results
-fviz_silhouette(
-    clust1, palette = "jco",
-    ggtheme = theme_classic()
+# Display the plots
+do.call(
+    ggarrange,
+    c(plots, nrow = 1, ncol = length(plots))
 )
 ```
 
+The results are very similar across experience levels. Strangely, the algorithm appears to switch the assignment of group 1 and 3 for when predators are advanced. I will need to take this into account when I assign the hunting type of the predators.
 
+### Add the information to the predicted dataset
 
-
-
-#### Add the information to the predicted dataset
+I will now add the clustering results to `dat2`, and then assign the hunting style for each predator based on the clusters.
 
 First, I need to extract the clustering results for every experience level.
 
@@ -209,7 +295,7 @@ result_list <- list()
 # Loop through the clustering objects and create data.tables
 for (i in seq_along(clust_list)) {
   result_list[[i]] <- data.table(
-    strategy = clust_list[[i]]$clustering,
+    cluster = clust_list[[i]]$clustering,
     predator_id = unique(dat2$predator_id),
     xp_level = xp_levels[i]
   )
@@ -228,37 +314,65 @@ dat2 <- merge(
 )
 ```
 
-Lastly, I rename the clustering results to reflect the strategy
+Lastly, I rename the clustering results to reflect the hunting type.
 
+For novice and intermediate predators :  
+
+- 1 = ambush-flexible
+- 2 = cursorial-specialist
+- 3 = intercepting-intermediate
+
+For advanced predators :  
+
+- 1 = intercepting-intermediate
+- 2 = cursorial-specialist
+- 3 = ambush-flexible
+
+I start by computing the results for novice and intermediate predators.
 
 ```{r}
+dat2[
+  xp_level %in% c("novice", "interm") & cluster == 1,
+  hunting_type := "ambush-flexible"
+]
 
+dat2[
+  xp_level %in% c("novice", "interm") & cluster == 2,
+  hunting_type := "cursorial-specialist"
+]
+
+dat2[
+  xp_level %in% c("novice", "interm") & cluster == 3,
+  hunting_type := "intercepting-intermediate"
+]
 ```
 
-
-
-
-## Import variables from raw data
-
-I include variables from the raw data that were missing in the original dataset. These variables relate to the predator's attacks.
+Now for advanced predators.
 
 ```{r}
-vars <- fread(
-  file.path(getwd(), "chapter2-ogdat", "final-data.csv"),
-  select = c(
-    "match_id", "predator_id", "chase_count", "chase_count_success",
-    "attacks_count", "prey_avg_heal_count", "prey_var_heal_count"),
-  stringsAsFactors = TRUE
-)
+dat2[
+  xp_level == "advanced" & cluster == 1,
+  hunting_type := "intercepting-intermediate"
+]
 
-vars[, chase_success_ratio := chase_count_success / chase_count]
+dat2[
+  xp_level == "advanced" & cluster == 2,
+  hunting_type := "cursorial-specialist"
+]
+
+dat2[
+  xp_level == "advanced" & cluster == 3,
+  hunting_type := "ambush-flexible"
+]
+
+dat2[, hunting_type := as.factor(hunting_type)]
 ```
 
 ## Merge into one dataset
 
 ### Reshape the original data
 
-Add a xp_level variable to dat1 to combine.
+Add a xp_level variable to `dat1` to merge with `dat2`.
 
 ```{r}
 # Experience column
@@ -274,50 +388,9 @@ dat1[cumul_xp_pred >= 300,
 dat1[, xp_level := as.factor(xp_level)]
 ```
 
-### Reshape the predicted data
-
-Here, I reshape the data to wide format so it is easier to work with when I merge.
-
-First, I select the variables I need.
-
-```{r}
-dat2 <- unique(
-    dat2[
-        variable == "pred_speed",
-        .(predator_id, xp_level, variable, sigma, mean_estimated)
-    ]
-)
-```
-
-Second, I reshape the table to wide format
-
-```{r}
-dat2 <- dcast(
-    dat2,
-    predator_id + xp_level ~ sigma,
-    value.var = "mean_estimated"
-)
-
-setnames(
-    dat2,
-    old = c("0", "1"),
-    new = c("predicted_mean_speed", "predicted_sigma_speed")
-)
-```
-
-Lastly, I add "pred" before each value of `predator_id` to have the same structure as `dat1`
-
-```{r}
-dat2[, predator_id := as.factor(paste0("pred", predator_id))]
-```
-
-Check the data
-
-```{r}
-knitr::kable(head(dat2))
-```
-
 ### Merge the tables
+
+First, I merge `dat1` with `dat2`, creating the `data` object.
 
 ```{r}
 data <- merge(
@@ -326,7 +399,11 @@ data <- merge(
     all.x = TRUE,
     by = c("predator_id", "xp_level")
 )
+```
 
+Second, I merge the attack variables (`vars`) that we exported earlier to the new `data` object.
+
+```{r}
 data <- merge(
   data,
   vars,
@@ -334,11 +411,11 @@ data <- merge(
 )
 ```
 
-## Organize the combined dataset
+## Final steps
 
 ### Remove outlier
 
-Remove predator outlier. This predator was removed from the analyses presented in Fraser Franco et al. (2024).
+Remove a predator outlier. This predator was removed from the analyses presented in Fraser Franco et al. (2024).
 
 ```{r}
 data <- data[predator_id != "pred379433"]
@@ -349,4 +426,12 @@ Check the table
 
 ```{r}
 knitr::kable(head(data))
+```
+
+### Save the data
+
+I can now save the full dataset as a .csv file.
+
+```{r}
+write.csv(data, file = "FraserFranco-etal-XXXX.csv")
 ```
