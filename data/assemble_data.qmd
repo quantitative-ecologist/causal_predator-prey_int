@@ -433,5 +433,8 @@ knitr::kable(head(data))
 I can now save the full dataset as a .csv file.
 
 ```{r}
-write.csv(data, file = "FraserFranco-etal-XXXX.csv")
+write.csv(
+  data,
+  file = "FraserFranco-etal-XXXX.csv",
+  row.names = FALSE)
 ```
