@@ -16,7 +16,11 @@ In this notebook, I build a pipeline that assembles a synthetic dataset that I w
 
 I start by importing the libraries that I will use.
 
-```{r, message = FALSE}
+```{r}
+#| warnings: false
+#| message: false
+#| output: false
+
 libs <- c(
   "data.table", "cluster",
   "ggplot2", "ggpubr", "viridis"
@@ -426,6 +430,73 @@ Check the table
 
 ```{r}
 knitr::kable(head(data))
+```
+
+### Compute variables
+
+#### Prior prey behaviours
+
+Here for each predator ID, I will create new columns that are the behaviours of the prey that were observed in the match before. This will be used as a variable in the model to see the effect of the prey encountered before, in contrast with the behaviour of the prey being hunted.
+
+I start by ordering the dataset by predator ID and timestamp.
+
+```{r}
+data <- data[order(predator_id, timestamp)]
+```
+
+Then I compute the prey variables in the match before
+
+```{r}
+newcols <- c(
+  "prior_prey_speed",
+  "prior_prey_heal",
+  "prior_success"
+)
+
+data[
+  , (newcols) := shift(
+    .SD, type = "lag", n = 1
+    )
+  , by = predator_id
+  , .SDcols = c(
+    "prey_avg_speed",
+    "prey_avg_heal_count",
+    "hunting_success"
+    )
+]
+```
+
+Check the output if it worked
+
+```{r}
+knitr::kable(head(
+  data[, .(
+    timestamp, predator_id,
+    prey_avg_speed, prior_prey_speed,
+    prey_avg_heal_count, prior_prey_heal,
+    hunting_success, prior_success
+  )]
+))
+```
+
+#### Time between observations
+
+Here, I compute the time lag between each observation to know how long it took for each predator to play a new game.
+
+The output is in minutes.
+
+```{r}
+data[, time_lag := c(NA, diff(timestamp)), by = predator_id]
+```
+
+Check if it worked
+
+```{r}
+knitr::kable(head(
+  data[, .(
+    timestamp, predator_id, time_lag
+  )]
+))
 ```
 
 ### Save the data
