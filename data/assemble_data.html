@@ -82,28 +82,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description"><span class="header-section-number">1</span> Description</a></li>
-  <li><a href="#import-the-data-from-github" id="toc-import-the-data-from-github" class="nav-link" data-scroll-target="#import-the-data-from-github"><span class="header-section-number">2</span> Import the data from GitHub</a>
+  <li><a href="#prepare-session" id="toc-prepare-session" class="nav-link" data-scroll-target="#prepare-session"><span class="header-section-number">2</span> Prepare session</a></li>
+  <li><a href="#original-data" id="toc-original-data" class="nav-link" data-scroll-target="#original-data"><span class="header-section-number">3</span> Original data</a></li>
+  <li><a href="#predicted-data" id="toc-predicted-data" class="nav-link" data-scroll-target="#predicted-data"><span class="header-section-number">4</span> Predicted data</a></li>
+  <li><a href="#raw-data" id="toc-raw-data" class="nav-link" data-scroll-target="#raw-data"><span class="header-section-number">5</span> Raw data</a></li>
+  <li><a href="#classify-predators-into-hunting-styles" id="toc-classify-predators-into-hunting-styles" class="nav-link" data-scroll-target="#classify-predators-into-hunting-styles"><span class="header-section-number">6</span> Classify predators into hunting styles</a>
   <ul class="collapse">
-  <li><a href="#original-dataset" id="toc-original-dataset" class="nav-link" data-scroll-target="#original-dataset"><span class="header-section-number">2.1</span> Original dataset</a></li>
-  <li><a href="#predicted-data" id="toc-predicted-data" class="nav-link" data-scroll-target="#predicted-data"><span class="header-section-number">2.2</span> Predicted data</a></li>
+  <li><a href="#prepare-the-data-for-clustering" id="toc-prepare-the-data-for-clustering" class="nav-link" data-scroll-target="#prepare-the-data-for-clustering"><span class="header-section-number">6.1</span> Prepare the data for clustering</a></li>
+  <li><a href="#run-the-fuzzy-clustering-algorithm" id="toc-run-the-fuzzy-clustering-algorithm" class="nav-link" data-scroll-target="#run-the-fuzzy-clustering-algorithm"><span class="header-section-number">6.2</span> Run the fuzzy clustering algorithm</a></li>
+  <li><a href="#add-the-information-to-the-predicted-dataset" id="toc-add-the-information-to-the-predicted-dataset" class="nav-link" data-scroll-target="#add-the-information-to-the-predicted-dataset"><span class="header-section-number">6.3</span> Add the information to the predicted dataset</a></li>
   </ul></li>
-  <li><a href="#import-variables-from-raw-data" id="toc-import-variables-from-raw-data" class="nav-link" data-scroll-target="#import-variables-from-raw-data"><span class="header-section-number">3</span> Import variables from raw data</a></li>
-  <li><a href="#classify-predators-into-hunting-styles" id="toc-classify-predators-into-hunting-styles" class="nav-link" data-scroll-target="#classify-predators-into-hunting-styles"><span class="header-section-number">4</span> Classify predators into hunting styles</a>
+  <li><a href="#merge-into-one-dataset" id="toc-merge-into-one-dataset" class="nav-link" data-scroll-target="#merge-into-one-dataset"><span class="header-section-number">7</span> Merge into one dataset</a>
   <ul class="collapse">
-  <li><a href="#prepare-the-data-for-clustering" id="toc-prepare-the-data-for-clustering" class="nav-link" data-scroll-target="#prepare-the-data-for-clustering"><span class="header-section-number">4.1</span> Prepare the data for clustering</a></li>
-  <li><a href="#run-the-fuzzy-clustering-algorithm" id="toc-run-the-fuzzy-clustering-algorithm" class="nav-link" data-scroll-target="#run-the-fuzzy-clustering-algorithm"><span class="header-section-number">4.2</span> Run the fuzzy clustering algorithm</a></li>
-  <li><a href="#add-the-information-to-the-predicted-dataset" id="toc-add-the-information-to-the-predicted-dataset" class="nav-link" data-scroll-target="#add-the-information-to-the-predicted-dataset"><span class="header-section-number">4.3</span> Add the information to the predicted dataset</a></li>
+  <li><a href="#reshape-the-original-data" id="toc-reshape-the-original-data" class="nav-link" data-scroll-target="#reshape-the-original-data"><span class="header-section-number">7.1</span> Reshape the original data</a></li>
+  <li><a href="#merge-the-tables" id="toc-merge-the-tables" class="nav-link" data-scroll-target="#merge-the-tables"><span class="header-section-number">7.2</span> Merge the tables</a></li>
   </ul></li>
-  <li><a href="#merge-into-one-dataset" id="toc-merge-into-one-dataset" class="nav-link" data-scroll-target="#merge-into-one-dataset"><span class="header-section-number">5</span> Merge into one dataset</a>
+  <li><a href="#final-steps" id="toc-final-steps" class="nav-link" data-scroll-target="#final-steps"><span class="header-section-number">8</span> Final steps</a>
   <ul class="collapse">
-  <li><a href="#reshape-the-original-data" id="toc-reshape-the-original-data" class="nav-link" data-scroll-target="#reshape-the-original-data"><span class="header-section-number">5.1</span> Reshape the original data</a></li>
-  <li><a href="#merge-the-tables" id="toc-merge-the-tables" class="nav-link" data-scroll-target="#merge-the-tables"><span class="header-section-number">5.2</span> Merge the tables</a></li>
-  </ul></li>
-  <li><a href="#final-steps" id="toc-final-steps" class="nav-link" data-scroll-target="#final-steps"><span class="header-section-number">6</span> Final steps</a>
-  <ul class="collapse">
-  <li><a href="#remove-outlier" id="toc-remove-outlier" class="nav-link" data-scroll-target="#remove-outlier"><span class="header-section-number">6.1</span> Remove outlier</a></li>
-  <li><a href="#compute-variables" id="toc-compute-variables" class="nav-link" data-scroll-target="#compute-variables"><span class="header-section-number">6.2</span> Compute variables</a></li>
-  <li><a href="#save-the-data" id="toc-save-the-data" class="nav-link" data-scroll-target="#save-the-data"><span class="header-section-number">6.3</span> Save the data</a></li>
+  <li><a href="#remove-outlier" id="toc-remove-outlier" class="nav-link" data-scroll-target="#remove-outlier"><span class="header-section-number">8.1</span> Remove outlier</a></li>
+  <li><a href="#compute-variables" id="toc-compute-variables" class="nav-link" data-scroll-target="#compute-variables"><span class="header-section-number">8.2</span> Compute variables</a></li>
+  <li><a href="#save-the-data" id="toc-save-the-data" class="nav-link" data-scroll-target="#save-the-data"><span class="header-section-number">8.3</span> Save the data</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -141,7 +139,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="description" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="description"><span class="header-section-number">1</span> Description</h2>
-<p>In this notebook, I build a pipeline that assembles a synthetic dataset that I will use for the analyses presented in the manuscript of this project. The pipeline is coded in <code>R</code>.</p>
+<p>In this notebook, I build a pipeline that assembles a synthetic dataset that I will use for the analyses presented in the manuscript of this project.</p>
+<p>I will use three different datasets to assemble my synthetic dataset:</p>
+<ol type="1">
+<li>The data from <a href="https://github.com/quantitative-ecologist/experience-hunting-tactics">Fraser Franco et al.&nbsp;(2024)</a> hosted on GitHub</li>
+<li>Predictions also from Fraser Franco et al.&nbsp;(2024) that were generated by a model</li>
+<li>Additional variables from the raw dataset from which the data from Fraser Franco et al.&nbsp;(2024) was built</li>
+</ol>
+<p>The pipeline is coded in <code>R</code>.</p>
+</section>
+<section id="prepare-session" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="prepare-session"><span class="header-section-number">2</span> Prepare session</h2>
 <p>I start by importing the libraries that I will use.</p>
 <div class="cell" data-warnings="false">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>libs <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
@@ -151,11 +159,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(libs, library, <span class="at">character.only =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="import-the-data-from-github" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="import-the-data-from-github"><span class="header-section-number">2</span> Import the data from GitHub</h2>
+<section id="original-data" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="original-data"><span class="header-section-number">3</span> Original data</h2>
 <p>The data is hosted on a GitHub repository that you can access <a href="https://github.com/quantitative-ecologist/experience-hunting-tactics">here</a>.</p>
-<section id="original-dataset" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="original-dataset"><span class="header-section-number">2.1</span> Original dataset</h3>
 <p>Here, I import the original dataset used in Fraser Franco et al.&nbsp;(2024).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>github_id <span class="ot">&lt;-</span> <span class="st">"https://raw.githubusercontent.com/quantitative-ecologist/"</span></span>
@@ -315,8 +321,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="predicted-data" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="predicted-data"><span class="header-section-number">2.2</span> Predicted data</h3>
+<section id="predicted-data" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="predicted-data"><span class="header-section-number">4</span> Predicted data</h2>
 <p>Next, I import predicted values of foraging behaviour generated from a Bayesian multivariate double-hierarchical model. These predictions allow us to assess whether predators were specialist or flexible hunters across experience. The predictions are saved as an <code>.rds</code> file.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>file2 <span class="ot">&lt;-</span> <span class="st">"/main/outputs/03_outputs_model-processing/DHMLM_id-draws.rds"</span></span>
@@ -424,9 +430,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-</section>
-<section id="import-variables-from-raw-data" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="import-variables-from-raw-data"><span class="header-section-number">3</span> Import variables from raw data</h2>
+<section id="raw-data" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="raw-data"><span class="header-section-number">5</span> Raw data</h2>
 <p>I include variables from the raw data that were missing in the original dataset. These variables relate to the predator’s attacks.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>vars <span class="ot">&lt;-</span> <span class="fu">fread</span>(</span>
@@ -440,8 +445,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>vars[, chase_success_ratio <span class="sc">:</span><span class="er">=</span> chase_count_success <span class="sc">/</span> chase_count]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="classify-predators-into-hunting-styles" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="classify-predators-into-hunting-styles"><span class="header-section-number">4</span> Classify predators into hunting styles</h2>
+<section id="classify-predators-into-hunting-styles" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="classify-predators-into-hunting-styles"><span class="header-section-number">6</span> Classify predators into hunting styles</h2>
 <p>Based on the predictions of the Bayesian multivariate hierarchical model (<code>dat2</code>), we will now assign a hunting type to every predator at each experience level.</p>
 <p><strong>The predator’s tactic</strong></p>
 <p>The tactic is defined along an ambush-cursorial continuum using the predator’s speed as a proxy. For details, see <a href="https://academic.oup.com/beheco/article/33/5/967/6628566?login=false">Fraser Franco et al.&nbsp;(2022)</a>.</p>
@@ -461,8 +466,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <p>In Fraser Franco et al.&nbsp;(2024), we found that the predators’ tactics and foraging strategies are negatively correlated, indicating that faster (cursorial) predators are more specialized, while slower (ambush) predators are more flexible.</p>
 <p>Here, we combine both information to classify predators into hunting types. This will make it easier to compute the joint probability distribution of the Bayesian learning network. I classify predators using fuzzy c-means clustering with the <code>fanny()</code> function from the <code>cluster</code> package.</p>
-<section id="prepare-the-data-for-clustering" class="level3" data-number="4.1">
-<h3 data-number="4.1" class="anchored" data-anchor-id="prepare-the-data-for-clustering"><span class="header-section-number">4.1</span> Prepare the data for clustering</h3>
+<section id="prepare-the-data-for-clustering" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="prepare-the-data-for-clustering"><span class="header-section-number">6.1</span> Prepare the data for clustering</h3>
 <p>Here, I prepare <code>dat2</code> to have clean tables for clustering.</p>
 <p>First, I calculate the posterior median of sigma values, since the median is a more robust central-tendency measure for non symmetric distributions such as variances. I also remove duplicate values to only keep the information on the median of the posterior. Lastly, I arrange the table into wide format.</p>
 <div class="cell">
@@ -514,8 +519,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>adv <span class="ot">&lt;-</span> <span class="fu">filter_dat</span>(dat2, <span class="at">level =</span> <span class="st">"advanced"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="run-the-fuzzy-clustering-algorithm" class="level3" data-number="4.2">
-<h3 data-number="4.2" class="anchored" data-anchor-id="run-the-fuzzy-clustering-algorithm"><span class="header-section-number">4.2</span> Run the fuzzy clustering algorithm</h3>
+<section id="run-the-fuzzy-clustering-algorithm" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="run-the-fuzzy-clustering-algorithm"><span class="header-section-number">6.2</span> Run the fuzzy clustering algorithm</h3>
 <p>I now run the clustering algorithm on the three datasets <code>nov</code>, <code>interm</code>, and <code>adv</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to perform fanny clustering with a fixed seed</span></span>
@@ -611,8 +616,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The results are very similar across experience levels. Strangely, the algorithm appears to switch the assignment of group 1 and 3 for when predators are advanced. I will need to take this into account when I assign the hunting type of the predators.</p>
 </section>
-<section id="add-the-information-to-the-predicted-dataset" class="level3" data-number="4.3">
-<h3 data-number="4.3" class="anchored" data-anchor-id="add-the-information-to-the-predicted-dataset"><span class="header-section-number">4.3</span> Add the information to the predicted dataset</h3>
+<section id="add-the-information-to-the-predicted-dataset" class="level3" data-number="6.3">
+<h3 data-number="6.3" class="anchored" data-anchor-id="add-the-information-to-the-predicted-dataset"><span class="header-section-number">6.3</span> Add the information to the predicted dataset</h3>
 <p>I will now add the clustering results to <code>dat2</code>, and then assign the hunting style for each predator based on the clusters.</p>
 <p>First, I need to extract the clustering results for every experience level.</p>
 <div class="cell">
@@ -695,10 +700,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="merge-into-one-dataset" class="level2" data-number="5">
-<h2 data-number="5" class="anchored" data-anchor-id="merge-into-one-dataset"><span class="header-section-number">5</span> Merge into one dataset</h2>
-<section id="reshape-the-original-data" class="level3" data-number="5.1">
-<h3 data-number="5.1" class="anchored" data-anchor-id="reshape-the-original-data"><span class="header-section-number">5.1</span> Reshape the original data</h3>
+<section id="merge-into-one-dataset" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="merge-into-one-dataset"><span class="header-section-number">7</span> Merge into one dataset</h2>
+<section id="reshape-the-original-data" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="reshape-the-original-data"><span class="header-section-number">7.1</span> Reshape the original data</h3>
 <p>Add a xp_level variable to <code>dat1</code> to merge with <code>dat2</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Experience column</span></span>
@@ -714,8 +719,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>dat1[, xp_level <span class="sc">:</span><span class="er">=</span> <span class="fu">as.factor</span>(xp_level)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="merge-the-tables" class="level3" data-number="5.2">
-<h3 data-number="5.2" class="anchored" data-anchor-id="merge-the-tables"><span class="header-section-number">5.2</span> Merge the tables</h3>
+<section id="merge-the-tables" class="level3" data-number="7.2">
+<h3 data-number="7.2" class="anchored" data-anchor-id="merge-the-tables"><span class="header-section-number">7.2</span> Merge the tables</h3>
 <p>First, I merge <code>dat1</code> with <code>dat2</code>, creating the <code>data</code> object.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">merge</span>(</span>
@@ -735,10 +740,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="final-steps" class="level2" data-number="6">
-<h2 data-number="6" class="anchored" data-anchor-id="final-steps"><span class="header-section-number">6</span> Final steps</h2>
-<section id="remove-outlier" class="level3" data-number="6.1">
-<h3 data-number="6.1" class="anchored" data-anchor-id="remove-outlier"><span class="header-section-number">6.1</span> Remove outlier</h3>
+<section id="final-steps" class="level2" data-number="8">
+<h2 data-number="8" class="anchored" data-anchor-id="final-steps"><span class="header-section-number">8</span> Final steps</h2>
+<section id="remove-outlier" class="level3" data-number="8.1">
+<h3 data-number="8.1" class="anchored" data-anchor-id="remove-outlier"><span class="header-section-number">8.1</span> Remove outlier</h3>
 <p>Remove a predator outlier. This predator was removed from the analyses presented in Fraser Franco et al.&nbsp;(2024).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[predator_id <span class="sc">!=</span> <span class="st">"pred379433"</span>]</span>
@@ -981,10 +986,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="compute-variables" class="level3" data-number="6.2">
-<h3 data-number="6.2" class="anchored" data-anchor-id="compute-variables"><span class="header-section-number">6.2</span> Compute variables</h3>
-<section id="prior-prey-behaviours" class="level4" data-number="6.2.1">
-<h4 data-number="6.2.1" class="anchored" data-anchor-id="prior-prey-behaviours"><span class="header-section-number">6.2.1</span> Prior prey behaviours</h4>
+<section id="compute-variables" class="level3" data-number="8.2">
+<h3 data-number="8.2" class="anchored" data-anchor-id="compute-variables"><span class="header-section-number">8.2</span> Compute variables</h3>
+<section id="prior-prey-behaviours" class="level4" data-number="8.2.1">
+<h4 data-number="8.2.1" class="anchored" data-anchor-id="prior-prey-behaviours"><span class="header-section-number">8.2.1</span> Prior prey behaviours</h4>
 <p>Here for each predator ID, I will create new columns that are the behaviours of the prey that were observed in the match before. This will be used as a variable in the model to see the effect of the prey encountered before, in contrast with the behaviour of the prey being hunted.</p>
 <p>I start by ordering the dataset by predator ID and timestamp.</p>
 <div class="cell">
@@ -1110,8 +1115,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="time-between-observations" class="level4" data-number="6.2.2">
-<h4 data-number="6.2.2" class="anchored" data-anchor-id="time-between-observations"><span class="header-section-number">6.2.2</span> Time between observations</h4>
+<section id="time-between-observations" class="level4" data-number="8.2.2">
+<h4 data-number="8.2.2" class="anchored" data-anchor-id="time-between-observations"><span class="header-section-number">8.2.2</span> Time between observations</h4>
 <p>Here, I compute the time lag between each observation to know how long it took for each predator to play a new game.</p>
 <p>The output is in minutes.</p>
 <div class="cell">
@@ -1170,8 +1175,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="save-the-data" class="level3" data-number="6.3">
-<h3 data-number="6.3" class="anchored" data-anchor-id="save-the-data"><span class="header-section-number">6.3</span> Save the data</h3>
+<section id="save-the-data" class="level3" data-number="8.3">
+<h3 data-number="8.3" class="anchored" data-anchor-id="save-the-data"><span class="header-section-number">8.3</span> Save the data</h3>
 <p>I can now save the full dataset as a .csv file.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(</span>
