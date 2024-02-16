@@ -988,9 +988,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="compute-variables" class="level3" data-number="8.2">
 <h3 data-number="8.2" class="anchored" data-anchor-id="compute-variables"><span class="header-section-number">8.2</span> Compute variables</h3>
-<section id="prior-prey-behaviours" class="level4" data-number="8.2.1">
-<h4 data-number="8.2.1" class="anchored" data-anchor-id="prior-prey-behaviours"><span class="header-section-number">8.2.1</span> Prior prey behaviours</h4>
-<p>Here for each predator ID, I will create new columns that are the behaviours of the prey that were observed in the match before. This will be used as a variable in the model to see the effect of the prey encountered before, in contrast with the behaviour of the prey being hunted.</p>
+<section id="prior-prey-behaviours-chases-and-success" class="level4" data-number="8.2.1">
+<h4 data-number="8.2.1" class="anchored" data-anchor-id="prior-prey-behaviours-chases-and-success"><span class="header-section-number">8.2.1</span> Prior prey behaviours, chases, and success</h4>
+<p>Here for each predator ID, I will create new columns that are the behaviours of the prey that were observed in the match before, as well as the prior amount of chases and the prior success of the predator. This will be used as variables in the model to see the effect of the prey encountered before on the predator’s current tactic, as well as previous success.</p>
 <p>I start by ordering the dataset by predator ID and timestamp.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> data[<span class="fu">order</span>(predator_id, timestamp)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1000,20 +1000,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>newcols <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"prior_prey_speed"</span>,</span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"prior_prey_heal"</span>,</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"prior_success"</span></span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>data[</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  , (newcols) <span class="sc">:</span><span class="er">=</span> <span class="fu">shift</span>(</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    .SD, <span class="at">type =</span> <span class="st">"lag"</span>, <span class="at">n =</span> <span class="dv">1</span></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  , by <span class="ot">=</span> predator_id</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  , .SDcols <span class="ot">=</span> <span class="fu">c</span>(</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prey_avg_speed"</span>,</span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prey_avg_heal_count"</span>,</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hunting_success"</span></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"prior_success"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"prior_chase_count"</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  , (newcols) <span class="sc">:</span><span class="er">=</span> <span class="fu">shift</span>(</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    .SD, <span class="at">type =</span> <span class="st">"lag"</span>, <span class="at">n =</span> <span class="dv">1</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  , by <span class="ot">=</span> predator_id</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  , .SDcols <span class="ot">=</span> <span class="fu">c</span>(</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prey_avg_speed"</span>,</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prey_avg_heal_count"</span>,</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"hunting_success"</span>,</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"chase_count"</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Check the output if it worked</p>
 <div class="cell">
@@ -1022,20 +1024,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    timestamp, predator_id,</span>
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    prey_avg_speed, prior_prey_speed,</span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>    prey_avg_heal_count, prior_prey_heal,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    hunting_success, prior_success</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  )]</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    hunting_success, prior_success,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    chase_count, prior_chase_count</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  )]</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
-<col style="width: 15%">
-<col style="width: 9%">
-<col style="width: 11%">
-<col style="width: 13%">
-<col style="width: 15%">
 <col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 10%">
 <col style="width: 12%">
 <col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 7%">
+<col style="width: 11%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -1047,6 +1052,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th style="text-align: right;">prior_prey_heal</th>
 <th style="text-align: right;">hunting_success</th>
 <th style="text-align: right;">prior_success</th>
+<th style="text-align: right;">chase_count</th>
+<th style="text-align: right;">prior_chase_count</th>
 </tr>
 </thead>
 <tbody>
@@ -1059,6 +1066,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">NA</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">NA</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">NA</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2021-01-02 14:57:02</td>
@@ -1069,6 +1078,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">1.25</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">5</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2021-01-02 15:08:18</td>
@@ -1079,6 +1090,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">8</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2021-01-02 15:30:29</td>
@@ -1089,6 +1102,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">1.75</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">19</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">2021-01-02 15:46:26</td>
@@ -1099,6 +1114,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">1.75</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">11</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">2021-01-12 10:14:16</td>
@@ -1109,6 +1126,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">0.00</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">4</td>
 </tr>
 </tbody>
 </table>
