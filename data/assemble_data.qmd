@@ -4,8 +4,11 @@ author: "Maxime Fraser Franco"
 date: "January 9, 2024"
 toc: true
 number-sections: true
+highlight-style: ayu
 format:
-  html
+  html:
+    theme: journal
+    toc-location: left
 #execute:
 #  warning: false
 ---
@@ -93,7 +96,8 @@ vars <- fread(
   file.path(getwd(), "chapter2-ogdat", "final-data.csv"),
   select = c(
     "match_id", "predator_id", "chase_count", "chase_count_success",
-    "attacks_count", "prey_avg_heal_count", "prey_var_heal_count"),
+    "attacks_count", "prey_avg_heal_count", "prey_var_heal_count",
+    "prey_var_speed"),
   stringsAsFactors = TRUE
 )
 
@@ -488,6 +492,32 @@ knitr::kable(head(
     chase_count, prior_chase_count
   )]
 ))
+```
+
+#### Cumulated experience with prey
+
+The strategy that the predator adopts could also depend on the amount of information that it accumulated from previous experiences with its prey. Thus, instead of just relying on the information from the previous encounter, a predator may also adjust its tactic based on all previous encounters.
+
+Given this hypothesis, I generated a new variable that is the range of prey speeds that the predator experienced prior to the current observation.
+
+```{r}
+# Function to calculate range
+calc_range <- function(x) {
+  if (length(x) <= 1) {
+    return(NA)
+  } else {
+    return(max(x) - min(x))
+  }
+}
+
+# Calculate the range from previous prey speeds
+data[
+  , range_prey_speed := sapply(
+      seq_len(.N),
+      function(i) calc_range(data[1:i, prey_avg_speed])
+  )
+  , by = "predator_id"
+]
 ```
 
 #### Time between observations

@@ -75,8 +75,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <body>
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
   <nav id="TOC" role="doc-toc" class="toc-active">
     <h2 id="toc-title">Table of contents</h2>
    
@@ -105,6 +105,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   </ul>
 </nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
 </div>
 <main class="content" id="quarto-document-content">
 
@@ -438,11 +440,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">file.path</span>(<span class="fu">getwd</span>(), <span class="st">"chapter2-ogdat"</span>, <span class="st">"final-data.csv"</span>),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">select =</span> <span class="fu">c</span>(</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"match_id"</span>, <span class="st">"predator_id"</span>, <span class="st">"chase_count"</span>, <span class="st">"chase_count_success"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"attacks_count"</span>, <span class="st">"prey_avg_heal_count"</span>, <span class="st">"prey_var_heal_count"</span>),</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">TRUE</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>vars[, chase_success_ratio <span class="sc">:</span><span class="er">=</span> chase_count_success <span class="sc">/</span> chase_count]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"attacks_count"</span>, <span class="st">"prey_avg_heal_count"</span>, <span class="st">"prey_var_heal_count"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"prey_var_speed"</span>),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">stringsAsFactors =</span> <span class="cn">TRUE</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>vars[, chase_success_ratio <span class="sc">:</span><span class="er">=</span> chase_count_success <span class="sc">/</span> chase_count]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="classify-predators-into-hunting-styles" class="level2" data-number="6">
@@ -771,7 +774,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <col style="width: 3%">
 <col style="width: 2%">
 <col style="width: 3%">
-<col style="width: 5%">
+<col style="width: 4%">
 <col style="width: 5%">
 <col style="width: 1%">
 <col style="width: 6%">
@@ -780,6 +783,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <col style="width: 3%">
 <col style="width: 4%">
 <col style="width: 4%">
+<col style="width: 3%">
 <col style="width: 4%">
 </colgroup>
 <thead>
@@ -809,6 +813,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <th style="text-align: right;">attacks_count</th>
 <th style="text-align: right;">prey_avg_heal_count</th>
 <th style="text-align: right;">prey_var_heal_count</th>
+<th style="text-align: right;">prey_var_speed</th>
 <th style="text-align: right;">chase_success_ratio</th>
 </tr>
 </thead>
@@ -839,6 +844,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">17</td>
 <td style="text-align: right;">2.250000</td>
 <td style="text-align: right;">2.9166667</td>
+<td style="text-align: right;">0.0946484</td>
 <td style="text-align: right;">0.4705882</td>
 </tr>
 <tr class="even">
@@ -867,6 +873,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">17</td>
 <td style="text-align: right;">2.666667</td>
 <td style="text-align: right;">4.3333333</td>
+<td style="text-align: right;">0.0687254</td>
 <td style="text-align: right;">0.2592593</td>
 </tr>
 <tr class="odd">
@@ -895,6 +902,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">11</td>
 <td style="text-align: right;">3.750000</td>
 <td style="text-align: right;">10.9166667</td>
+<td style="text-align: right;">0.0233574</td>
 <td style="text-align: right;">0.2000000</td>
 </tr>
 <tr class="even">
@@ -923,6 +931,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">11</td>
 <td style="text-align: right;">2.500000</td>
 <td style="text-align: right;">13.6666667</td>
+<td style="text-align: right;">0.5189156</td>
 <td style="text-align: right;">0.4000000</td>
 </tr>
 <tr class="odd">
@@ -951,6 +960,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">12</td>
 <td style="text-align: right;">3.500000</td>
 <td style="text-align: right;">20.3333333</td>
+<td style="text-align: right;">0.0846272</td>
 <td style="text-align: right;">0.2500000</td>
 </tr>
 <tr class="even">
@@ -979,6 +989,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">9</td>
 <td style="text-align: right;">1.333333</td>
 <td style="text-align: right;">0.3333333</td>
+<td style="text-align: right;">0.2142825</td>
 <td style="text-align: right;">0.2777778</td>
 </tr>
 </tbody>
@@ -1134,20 +1145,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="time-between-observations" class="level4" data-number="8.2.2">
-<h4 data-number="8.2.2" class="anchored" data-anchor-id="time-between-observations"><span class="header-section-number">8.2.2</span> Time between observations</h4>
+<section id="cumulated-experience-with-prey" class="level4" data-number="8.2.2">
+<h4 data-number="8.2.2" class="anchored" data-anchor-id="cumulated-experience-with-prey"><span class="header-section-number">8.2.2</span> Cumulated experience with prey</h4>
+<p>The strategy that the predator adopts could also depend on the amount of information that it accumulated from previous experiences with its prey. Thus, instead of just relying on the information from the previous encounter, a predator may also adjust its tactic based on all previous encounters.</p>
+<p>Given this hypothesis, I generated a new variable that is the range of prey speeds that the predator experienced prior to the current observation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Function to calculate range</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>calc_range <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(x) <span class="sc">&lt;=</span> <span class="dv">1</span>) {</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="cn">NA</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">max</span>(x) <span class="sc">-</span> <span class="fu">min</span>(x))</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the range from previous prey speeds</span></span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>data[</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  , range_prey_speed <span class="sc">:</span><span class="er">=</span> <span class="fu">sapply</span>(</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>      <span class="fu">seq_len</span>(.N),</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>      <span class="cf">function</span>(i) <span class="fu">calc_range</span>(data[<span class="dv">1</span><span class="sc">:</span>i, prey_avg_speed])</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>  , by <span class="ot">=</span> <span class="st">"predator_id"</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="time-between-observations" class="level4" data-number="8.2.3">
+<h4 data-number="8.2.3" class="anchored" data-anchor-id="time-between-observations"><span class="header-section-number">8.2.3</span> Time between observations</h4>
 <p>Here, I compute the time lag between each observation to know how long it took for each predator to play a new game.</p>
 <p>The output is in minutes.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>data[, time_lag <span class="sc">:</span><span class="er">=</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">diff</span>(timestamp)), by <span class="ot">=</span> predator_id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>data[, time_lag <span class="sc">:</span><span class="er">=</span> <span class="fu">c</span>(<span class="cn">NA</span>, <span class="fu">diff</span>(timestamp)), by <span class="ot">=</span> predator_id]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Check if it worked</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  data[, .(</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    timestamp, predator_id, time_lag</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  )]</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  data[, .(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>    timestamp, predator_id, time_lag</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  )]</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <thead>
@@ -1198,10 +1233,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 data-number="8.3" class="anchored" data-anchor-id="save-the-data"><span class="header-section-number">8.3</span> Save the data</h3>
 <p>I can now save the full dataset as a .csv file.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"FraserFranco-etal-XXXX.csv"</span>,</span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">file =</span> <span class="st">"FraserFranco-etal-XXXX.csv"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
