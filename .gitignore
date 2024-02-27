@@ -4,3 +4,4 @@ data/assemble_data_files
 .vscode
 data/chapter2-ogdat
 code/tests_code
+outputs/tests_output
