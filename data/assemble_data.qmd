@@ -93,7 +93,7 @@ I include variables from the raw data that were missing in the original dataset.
 
 ```{r}
 vars <- fread(
-  file.path(getwd(), "chapter2-ogdat", "final-data.csv"),
+  file.path(getwd(), "raw", "raw-data.csv"),
   select = c(
     "match_id", "predator_id", "chase_count", "chase_count_success",
     "attacks_count", "prey_avg_heal_count", "prey_var_heal_count",
@@ -469,14 +469,14 @@ newcols <- c(
 data[
   , (newcols) := shift(
     .SD, type = "lag", n = 1
-    )
+  )
   , by = predator_id
   , .SDcols = c(
     "prey_avg_speed",
     "prey_avg_heal_count",
     "hunting_success",
     "chase_count"
-    )
+  )
 ]
 ```
 
@@ -499,6 +499,8 @@ knitr::kable(head(
 The strategy that the predator adopts could also depend on the amount of information that it accumulated from previous experiences with its prey. Thus, instead of just relying on the information from the previous encounter, a predator may also adjust its tactic based on all previous encounters.
 
 Given this hypothesis, I generated a new variable that is the range of prey speeds that the predator experienced prior to the current observation.
+
+**need to update this to calculate quantile difference**
 
 ```{r}
 # Function to calculate range
@@ -527,7 +529,10 @@ Here, I compute the time lag between each observation to know how long it took f
 The output is in minutes.
 
 ```{r}
-data[, time_lag := c(NA, diff(timestamp)), by = predator_id]
+data[
+  , time_lag := c(NA, diff(timestamp)),
+  by = predator_id
+]
 ```
 
 Check if it worked
@@ -540,6 +545,75 @@ knitr::kable(head(
 ))
 ```
 
+#### Time between sessions per 24h cycle
+
+Similar to the step above, here, I consider every day as a session. I calculate the time lag between each new session which starts at a new day.
+
+The output is in hours.
+
+I start by computing a new column that is the timestamp coming before the current one.
+```{r}
+data[
+  , last_timestamp := shift(
+      timestamp,
+      type = "lag",
+      fill = NA
+  )
+  , by = predator_id
+]
+```
+
+I then calculate the difference between the timestamps.
+
+```{r}
+data[
+  , elapsed_time_24h := as.numeric(
+      difftime(
+        timestamp,
+        last_timestamp,
+        units = "hours"
+      )
+  )
+  , by = predator_id
+]
+```
+
+Lastly, I identify the last timestamp for each day, and fill the column with the value being the difference in time.
+
+```{r}
+data[, day := as.Date(timestamp) ]
+data[, day_shift := shift(day, type = "lag") ]
+data[day == day_shift, elapsed_time_24h := NA ]
+
+data[
+  , elapsed_time_24h_filled := na.omit(elapsed_time_24h)
+  , by = .(predator_id, day)
+]
+```
+
+And I delete the columns used to perform the operation that I don't need anymore.
+
+```{r}
+cols <- c("day", "day_shift", "last_timestamp", "elapsed_time_24h")
+data[, (cols) := NULL]
+
+# Rename the computed column with a better name
+setnames(data, "elapsed_time_24h_filled", "time_lag_24h")
+```
+
+#### Chases per second
+
+Using chases per second will enable me to control for the game duration without having to include it in the model as a predictor.
+
+```{r}
+data[
+  , ":="(
+    chase_count_persec = chase_count / game_duration,
+    prior_chase_count_persec = chase_count / game_duration
+  )
+]
+```
+
 ### Save the data
 
 I can now save the full dataset as a .csv file.
@@ -548,5 +622,6 @@ I can now save the full dataset as a .csv file.
 write.csv(
   data,
   file = "FraserFranco-etal-XXXX.csv",
-  row.names = FALSE)
+  row.names = FALSE
+)
 ```
