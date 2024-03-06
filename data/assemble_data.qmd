@@ -1,7 +1,7 @@
 ---
 title: "Assemble a dataset for analysis"
 author: "Maxime Fraser Franco"
-date: "January 9, 2024"
+date: "March 6, 2024"
 toc: true
 number-sections: true
 highlight-style: ayu
@@ -500,7 +500,7 @@ The strategy that the predator adopts could also depend on the amount of informa
 
 Given this hypothesis, I generated a new variable that is the range of prey speeds that the predator experienced prior to the current observation.
 
-**need to update this to calculate quantile difference**
+**True range of previous values**
 
 ```{r}
 # Function to calculate range
@@ -522,16 +522,39 @@ data[
 ]
 ```
 
+**Interquartile range of previous values**
+
+```{r}
+# Function to calculate interquartile difference
+calc_iqr <- function(x) {
+  if (length(x) <= 1) {
+    return(NA)
+  } else {
+    return(IQR(x))
+  }
+}
+
+# Calculate the interquartile difference from previous prey speeds
+data[
+  , iqrange_prey_speed := sapply(
+    seq_len(.N),
+    function(i) calc_iqr(data[1:i, prey_avg_speed])
+  )
+  , by = "predator_id"
+]
+
+```
+
 #### Time between observations
 
 Here, I compute the time lag between each observation to know how long it took for each predator to play a new game.
 
-The output is in minutes.
+The `time_lag_matches` variable is in minutes.
 
 ```{r}
 data[
-  , time_lag := c(NA, diff(timestamp)),
-  by = predator_id
+  , time_lag_matches := c(NA, diff(timestamp))
+  , by = predator_id
 ]
 ```
 
@@ -540,18 +563,21 @@ Check if it worked
 ```{r}
 knitr::kable(head(
   data[, .(
-    timestamp, predator_id, time_lag
+    timestamp, predator_id, time_lag_matches
   )]
 ))
 ```
 
-#### Time between sessions per 24h cycle
+The calculation went well.
 
-Similar to the step above, here, I consider every day as a session. I calculate the time lag between each new session which starts at a new day.
+#### Time between sessions per 8h cycle
 
-The output is in hours.
+Similar to the step above, I calculate the time lag between gaming sessions chronologically. Here, I consider a session as any matches that were played within an 8h range. Thus, anything outside of the 8h range is considered a new session.
+
+The `time_lag_sessions` output is in hours.
 
 I start by computing a new column that is the timestamp coming before the current one.
+
 ```{r}
 data[
   , last_timestamp := shift(
@@ -563,11 +589,11 @@ data[
 ]
 ```
 
-I then calculate the difference between the timestamps.
+I then calculate the difference between the current and the previous timestamp.
 
 ```{r}
 data[
-  , elapsed_time_24h := as.numeric(
+  , elapsed_time := as.numeric(
       difftime(
         timestamp,
         last_timestamp,
@@ -578,27 +604,111 @@ data[
 ]
 ```
 
-Lastly, I identify the last timestamp for each day, and fill the column with the value being the difference in time.
+To ensure that there were no sessions where players were playing during nightime (e.g. switching from 23h00 to past midnight within a session), I use a range of 8 hours and define that any difference equal or higher than this should be considered a new session.
+
+I will then inspect the values in a table to ensure that there are no observations with `session == new_session` where `elapsed_time == NA`.
 
 ```{r}
-data[, day := as.Date(timestamp) ]
-data[, day_shift := shift(day, type = "lag") ]
-data[day == day_shift, elapsed_time_24h := NA ]
-
 data[
-  , elapsed_time_24h_filled := na.omit(elapsed_time_24h)
-  , by = .(predator_id, day)
+  , session := ifelse(
+    elapsed_time >= 8,
+    "new_session",
+    "same_session"
+  )
 ]
 ```
 
-And I delete the columns used to perform the operation that I don't need anymore.
+Now, I assign an `NA` to `elapsed_time` for any observation that is within a current session (i.e. `session == "same_session"`).
+
+Hence, the `elapsed_time` column should mostly contain `NA` and numeric values only when the observation is a new session.
 
 ```{r}
-cols <- c("day", "day_shift", "last_timestamp", "elapsed_time_24h")
+data[
+  session == "same_session"
+  , elapsed_time := NA
+]
+```
+
+I can now check if my calculations are correct and that we don't have any sessions where there is an overlap between two days (i.e. a late night session).
+
+We shouldn't have any observations for `elapsed_time == NA` when `session == new_session`, and no observations that have a value for `elapsed_time` when `session == same_session`.
+
+```{r}
+# If the value is 0, it is NA.
+data[
+  , value_check := dplyr::if_else(
+    is.na(elapsed_time),
+    0,
+    1
+  )
+]
+
+knitr::kable(
+  table(data$session, data$value_check)
+)
+```
+
+The calculation went well, we can proceed.
+
+I finish by filling the NAs in `elapsed_time` with the time difference for the `"new_session"` for every following `"same_session"` by `predator_id`.
+
+For example, if you look at this chunk of the `data` :
+
+```{r}
+knitr::kable(head(
+  data[
+    predator_id == "pred100494"
+    , .(predator_id, timestamp, session, elapsed_time)
+  ]
+  , 11
+))
+```
+
+we want the NA values of `elapsed_time` following line 7 (where `session == "new_session"`) to be filled with the value `136.4031` because these observations pertain to the same session. This is what we want to do for all sessions across `predator_id`.
+
+To do so, I define a function that will find the `new_sessions` in `session` and fill the following NAs in `elapsed_time` for this session with the time difference value. This will be applied everytime there is a `new_session` value in `session`.
+
+```{r}
+# Function to get the first "new_session" value
+fill_na <- function(x) {
+  if (any(!is.na(x))) {
+    previous_value <- NA
+    for (i in 1:length(x)) {
+      if (is.na(x[i])) {
+        x[i] <- previous_value
+      } else {
+        previous_value <- x[i]
+      }
+    }
+  }
+  return(x)
+}
+```
+
+I then apply the function to the data by `predator_id`.
+
+```{r}
+data[
+  , elapsed_time_filled := fill_na(elapsed_time)
+  , by = predator_id
+]
+```
+
+Lastly, I delete the columns used to perform the operation that I don't need anymore.
+
+```{r}
+cols <- c(
+  "last_timestamp", "value_check",
+  "elapsed_time", "session"
+)
 data[, (cols) := NULL]
 
 # Rename the computed column with a better name
-setnames(data, "elapsed_time_24h_filled", "time_lag_24h")
+setnames(
+  x = data,
+  old = "elapsed_time_filled",
+  new = "time_lag_session"
+)
 ```
 
 #### Chases per second
