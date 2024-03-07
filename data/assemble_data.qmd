@@ -480,7 +480,8 @@ newcols <- c(
   "prior_prey_heal",
   "prior_success",
   "prior_prey_captured",
-  "prior_chases_persec"
+  "prior_chases_persec",
+  "prior_chase_count"
 )
 
 data[
@@ -493,7 +494,8 @@ data[
     "prey_avg_heal_count",
     "hunting_success",
     "prey_captured",
-    "chases_persec"
+    "chases_persec",
+    "chase_count"
   )
 ]
 ```
